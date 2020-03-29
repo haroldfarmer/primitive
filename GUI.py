@@ -6,11 +6,7 @@ def window():
     myLabel = Label(root, text="Primitive")
     myLabel.pack()
     root.mainloop()
-    try :
-        os.system('primitive f -i C:\\Users\\harol\\Desktop\\yaPal.jpg -o C:\\Users\\harol\\Desktop\\thisisatest.png -n 100')
-    except OSError:
-        print("error")
-    
+    os.system('primitive f -i C:\\Users\\harol\\Desktop\\yaPal.jpg -o C:\\Users\\harol\\Desktop\\PythonGUI.png -n 100')
 window()
 
 

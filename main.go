@@ -6,16 +6,9 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"math/rand"
 	"os"
-	"path/filepath"
-	"runtime"
 	"strconv"
 	"strings"
-	"time"
-
-	//"github.com/fogleman/primitive/primitive"
-	"github.com/nfnt/resize"
 )
 
 var (
@@ -214,4 +207,5 @@ func main() {
 			}
 		}
 	}
+	fmt.Printf("Hello World")
 }
