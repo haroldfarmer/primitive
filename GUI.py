@@ -6,7 +6,7 @@ def window():
     myLabel = Label(root, text="Primitive")
     myLabel.pack()
     root.mainloop()
-    os.system('primitive f -i C:\\Users\\harol\\Desktop\\yaPal.jpg -o C:\\Users\\harol\\Desktop\\PythonGUI.png -n 100')
+    os.system('primitive -i C:\\Users\\harol\\Desktop\\yaPal.jpg -o C:\\Users\\harol\\Desktop\\PythonGUI.png -n 100')
 window()
 
 
