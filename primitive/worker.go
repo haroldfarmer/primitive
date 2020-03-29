@@ -43,11 +43,11 @@ func (worker *Worker) Init(current *image.RGBA, score float64) {
 	worker.Heatmap.Clear()
 }
 
-func (worker *Worker) Energy(shape Shape, alpha int) float64 {
+func (worker *Worker) Energy(shape Shape, alpha, filter int) float64 {
 	worker.Counter++
 	lines := shape.Rasterize()
 	// worker.Heatmap.Add(lines)
-	color := computeColor(worker.Target, worker.Current, lines, alpha)
+	color := computeColor(worker.Target, worker.Current, lines, alpha, filter)
 	copyLines(worker.Buffer, worker.Current, lines)
 	drawLines(worker.Buffer, color, lines)
 	return differencePartial(worker.Target, worker.Current, worker.Buffer, worker.Score, lines)
