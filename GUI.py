@@ -1,10 +1,15 @@
 from tkinter import *
+import os
 
 def window():
     root = Tk()
     myLabel = Label(root, text="Primitive")
     myLabel.pack()
     root.mainloop()
+    try :
+        os.system('primitive f -i C:\\Users\\harol\\Desktop\\yaPal.jpg -o C:\\Users\\harol\\Desktop\\thisisatest.png -n 100')
+    except OSError:
+        print("error")
     
 window()
 
@@ -39,3 +44,5 @@ window()
     #allows the user to select the photo they want
     #import easygui
     #file = easygui.fileopenbox()
+
+   
