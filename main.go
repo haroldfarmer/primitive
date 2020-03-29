@@ -1,5 +1,7 @@
 package main
 
+import "C"
+
 import (
 	"flag"
 	"fmt"
@@ -28,6 +30,7 @@ var (
 	Workers    int
 	Nth        int
 	Repeat     int
+	Filter     int
 	V, VV      bool
 )
 
@@ -47,6 +50,7 @@ type shapeConfig struct {
 	Mode   int
 	Alpha  int
 	Repeat int
+	Filter int
 }
 
 type shapeConfigArray []shapeConfig
@@ -57,7 +61,7 @@ func (i *shapeConfigArray) String() string {
 
 func (i *shapeConfigArray) Set(value string) error {
 	n, _ := strconv.ParseInt(value, 0, 0)
-	*i = append(*i, shapeConfig{int(n), Mode, Alpha, Repeat})
+	*i = append(*i, shapeConfig{int(n), Mode, Alpha, Repeat, Filter})
 	return nil
 }
 
@@ -73,6 +77,7 @@ func init() {
 	flag.IntVar(&Workers, "j", 0, "number of parallel workers (default uses all cores)")
 	flag.IntVar(&Nth, "nth", 1, "save every Nth frame (put \"%d\" in path)")
 	flag.IntVar(&Repeat, "rep", 0, "add N extra shapes per iteration with reduced search")
+	flag.IntVar(&Filter, "f", 0, "0=no filter 1=gray scale 2=sepia 3=negative")
 	flag.BoolVar(&V, "v", false, "verbose")
 	flag.BoolVar(&VV, "vv", false, "very verbose")
 }
@@ -105,6 +110,7 @@ func main() {
 		Configs[0].Mode = Mode
 		Configs[0].Alpha = Alpha
 		Configs[0].Repeat = Repeat
+		Configs[0].Filter = Filter
 	}
 	for _, config := range Configs {
 		if config.Count < 1 {
@@ -159,14 +165,15 @@ func main() {
 	frame := 0
 	for j, config := range Configs {
 		primitive.Log(1, "count=%d, mode=%d, alpha=%d, repeat=%d\n",
-			config.Count, config.Mode, config.Alpha, config.Repeat)
+			config.Count, config.Mode, config.Alpha, config.Repeat
+			config.Filter)
 
 		for i := 0; i < config.Count; i++ {
 			frame++
 
 			// find optimal shape and add it to the model
 			t := time.Now()
-			n := model.Step(primitive.ShapeType(config.Mode), config.Alpha, config.Repeat)
+			n := model.Step(primitive.ShapeType(config.Mode), config.Alpha, config.Repeat, config.Filter)
 			nps := primitive.NumberString(float64(n) / time.Since(t).Seconds())
 			elapsed := time.Since(start).Seconds()
 			primitive.Log(1, "%d: t=%.3f, score=%.6f, n=%d, n/s=%s\n", frame, elapsed, model.Score, n, nps)
