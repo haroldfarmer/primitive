@@ -8,8 +8,6 @@ import (
 	"github.com/fogleman/gg"
 )
 
-//TODO: add FILTER
-//Note: default = none
 type Model struct {
 	Sw, Sh     int
 	Scale      float64
@@ -22,6 +20,7 @@ type Model struct {
 	Colors     []Color
 	Scores     []float64
 	Workers    []*Worker
+	Filter     int
 }
 
 func NewModel(target image.Image, background Color, size, numWorkers int) *Model {
@@ -88,7 +87,7 @@ func (model *Model) Frames(scoreDelta float64) []image.Image {
 func (model *Model) SVG() string {
 	bg := model.Background
 	var lines []string
-	lines = append(lines, fmt.Sprintf("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"%d\" height=\"%d\">", model.Sw, model.Sh))
+	lines = append(lines, fmt.Sprintf("<svg xmlns=\"https://urldefense.proofpoint.com/v2/url?u=http-3A__www.w3.org_2000_svg-255C&d=DwIGAg&c=3buyMx9JlH1z22L_G5pM28wz_Ru6WjhVHwo-vpeS0Gk&r=BO5Pmimk9xkRpxuS6uTNL6Dywq5Ji5JVNqEtf3s6Pwg&m=m7YgG66LCajTTGUb0Cd1_7Ofvzcxq8C3ZtLKAzCLRug&s=NjPAoRPQDco1uECx00tt1ytx24vbvFvmdtqpwUt65_w&e= " version=\"1.1\" width=\"%d\" height=\"%d\">", model.Sw, model.Sh))
 	lines = append(lines, fmt.Sprintf("<rect x=\"0\" y=\"0\" width=\"%d\" height=\"%d\" fill=\"#%02x%02x%02x\" />", model.Sw, model.Sh, bg.R, bg.G, bg.B))
 	lines = append(lines, fmt.Sprintf("<g transform=\"scale(%f) translate(0.5 0.5)\">", model.Scale))
 	for i, shape := range model.Shapes {
@@ -102,10 +101,10 @@ func (model *Model) SVG() string {
 	return strings.Join(lines, "\n")
 }
 
-func (model *Model) Add(shape Shape, alpha int) {
+func (model *Model) Add(shape Shape, alpha, filter int) {
 	before := copyRGBA(model.Current)
 	lines := shape.Rasterize()
-	color := computeColor(model.Target, model.Current, lines, alpha)
+	color := computeColor(model.Target, model.Current, lines, alpha, filter)
 	drawLines(model.Current, color, lines)
 	score := differencePartial(model.Target, before, model.Current, model.Score, lines)
 
@@ -118,10 +117,10 @@ func (model *Model) Add(shape Shape, alpha int) {
 	shape.Draw(model.Context, model.Scale)
 }
 
-func (model *Model) Step(shapeType ShapeType, alpha, repeat int) int {
+func (model *Model) Step(shapeType ShapeType, alpha, repeat, filter int) int {
 	state := model.runWorkers(shapeType, alpha, 1000, 100, 16)
 	// state = HillClimb(state, 1000).(*State)
-	model.Add(state.Shape, state.Alpha)
+	model.Add(state.Shape, state.Alpha, filter)
 
 	for i := 0; i < repeat; i++ {
 		state.Worker.Init(model.Current, model.Score)
@@ -131,7 +130,7 @@ func (model *Model) Step(shapeType ShapeType, alpha, repeat int) int {
 		if a == b {
 			break
 		}
-		model.Add(state.Shape, state.Alpha)
+		model.Add(state.Shape, state.Alpha, filter)
 	}
 
 	// for _, w := range model.Workers[1:] {
