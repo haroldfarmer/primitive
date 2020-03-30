@@ -6,21 +6,20 @@ type State struct {
 	Alpha       int
 	MutateAlpha bool
 	Score       float64
-	Filter      int
 }
 
-func NewState(worker *Worker, shape Shape, alpha, filter int) *State {
+func NewState(worker *Worker, shape Shape, alpha int) *State {
 	var mutateAlpha bool
 	if alpha == 0 {
 		alpha = 128
 		mutateAlpha = true
 	}
-	return &State{worker, shape, alpha, mutateAlpha, -1, filter}
+	return &State{worker, shape, alpha, mutateAlpha, -1}
 }
 
 func (state *State) Energy() float64 {
 	if state.Score < 0 {
-		state.Score = state.Worker.Energy(state.Shape, state.Alpha, state.Filter)
+		state.Score = state.Worker.Energy(state.Shape, state.Alpha)
 	}
 	return state.Score
 }
@@ -45,5 +44,5 @@ func (state *State) UndoMove(undo interface{}) {
 
 func (state *State) Copy() Annealable {
 	return &State{
-		state.Worker, state.Shape.Copy(), state.Alpha, state.MutateAlpha, state.Score, state.Filter}
+		state.Worker, state.Shape.Copy(), state.Alpha, state.MutateAlpha, state.Score}
 }

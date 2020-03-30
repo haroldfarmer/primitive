@@ -9,16 +9,17 @@ import (
 )
 
 type Worker struct {
-	W, H       int
-	Target     *image.RGBA
-	Current    *image.RGBA
-	Buffer     *image.RGBA
-	Rasterizer *raster.Rasterizer
-	Lines      []Scanline
-	Heatmap    *Heatmap
-	Rnd        *rand.Rand
-	Score      float64
-	Counter    int
+	W, H         int
+	Target       *image.RGBA
+	Current      *image.RGBA
+	Buffer       *image.RGBA
+	Rasterizer   *raster.Rasterizer
+	Lines        []Scanline
+	Heatmap      *Heatmap
+	Rnd          *rand.Rand
+	Score        float64
+	Counter      int
+	TargetFilter int
 }
 
 func NewWorker(target *image.RGBA) *Worker {
@@ -43,11 +44,11 @@ func (worker *Worker) Init(current *image.RGBA, score float64) {
 	worker.Heatmap.Clear()
 }
 
-func (worker *Worker) Energy(shape Shape, alpha, filter int) float64 {
+func (worker *Worker) Energy(shape Shape, alpha int) float64 {
 	worker.Counter++
 	lines := shape.Rasterize()
 	// worker.Heatmap.Add(lines)
-	color := computeColor(worker.Target, worker.Current, lines, alpha, filter)
+	color := computeColor(worker.Target, worker.Current, lines, alpha, worker.TargetFilter)
 	copyLines(worker.Buffer, worker.Current, lines)
 	drawLines(worker.Buffer, color, lines)
 	return differencePartial(worker.Target, worker.Current, worker.Buffer, worker.Score, lines)
@@ -56,8 +57,9 @@ func (worker *Worker) Energy(shape Shape, alpha, filter int) float64 {
 func (worker *Worker) BestHillClimbState(t ShapeType, a, n, age, m, filter int) *State {
 	var bestEnergy float64
 	var bestState *State
+	worker.TargetFilter = filter
 	for i := 0; i < m; i++ {
-		state := worker.BestRandomState(t, a, n, filter)
+		state := worker.BestRandomState(t, a, n)
 		before := state.Energy()
 		state = HillClimb(state, age).(*State)
 		energy := state.Energy()
@@ -70,11 +72,11 @@ func (worker *Worker) BestHillClimbState(t ShapeType, a, n, age, m, filter int) 
 	return bestState
 }
 
-func (worker *Worker) BestRandomState(t ShapeType, a, n, filter int) *State {
+func (worker *Worker) BestRandomState(t ShapeType, a, n int) *State {
 	var bestEnergy float64
 	var bestState *State
 	for i := 0; i < n; i++ {
-		state := worker.RandomState(t, a, filter)
+		state := worker.RandomState(t, a)
 		energy := state.Energy()
 		if i == 0 || energy < bestEnergy {
 			bestEnergy = energy
@@ -84,25 +86,25 @@ func (worker *Worker) BestRandomState(t ShapeType, a, n, filter int) *State {
 	return bestState
 }
 
-func (worker *Worker) RandomState(t ShapeType, a, filter int) *State {
+func (worker *Worker) RandomState(t ShapeType, a int) *State {
 	switch t {
 	default:
-		return worker.RandomState(ShapeType(worker.Rnd.Intn(8)+1), a, filter)
+		return worker.RandomState(ShapeType(worker.Rnd.Intn(8)+1), a)
 	case ShapeTypeTriangle:
-		return NewState(worker, NewRandomTriangle(worker), a, filter)
+		return NewState(worker, NewRandomTriangle(worker), a)
 	case ShapeTypeRectangle:
-		return NewState(worker, NewRandomRectangle(worker), a, filter)
+		return NewState(worker, NewRandomRectangle(worker), a)
 	case ShapeTypeEllipse:
-		return NewState(worker, NewRandomEllipse(worker), a, filter)
+		return NewState(worker, NewRandomEllipse(worker), a)
 	case ShapeTypeCircle:
-		return NewState(worker, NewRandomCircle(worker), a, filter)
+		return NewState(worker, NewRandomCircle(worker), a)
 	case ShapeTypeRotatedRectangle:
-		return NewState(worker, NewRandomRotatedRectangle(worker), a, filter)
+		return NewState(worker, NewRandomRotatedRectangle(worker), a)
 	case ShapeTypeQuadratic:
-		return NewState(worker, NewRandomQuadratic(worker), a, filter)
+		return NewState(worker, NewRandomQuadratic(worker), a)
 	case ShapeTypeRotatedEllipse:
-		return NewState(worker, NewRandomRotatedEllipse(worker), a, filter)
+		return NewState(worker, NewRandomRotatedEllipse(worker), a)
 	case ShapeTypePolygon:
-		return NewState(worker, NewRandomPolygon(worker, 4, false), a, filter)
+		return NewState(worker, NewRandomPolygon(worker, 4, false), a)
 	}
 }

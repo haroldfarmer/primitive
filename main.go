@@ -164,9 +164,8 @@ func main() {
 	start := time.Now()
 	frame := 0
 	for j, config := range Configs {
-		primitive.Log(1, "count=%d, mode=%d, alpha=%d, repeat=%d\n",
-			config.Count, config.Mode, config.Alpha, config.Repeat
-			config.Filter)
+		primitive.Log(1, "count=%d, mode=%d, alpha=%d, repeat=%d, filter=%d\n",
+			config.Count, config.Mode, config.Alpha, config.Repeat, config.Filter
 
 		for i := 0; i < config.Count; i++ {
 			frame++
