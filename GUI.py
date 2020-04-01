@@ -1,12 +1,18 @@
 from tkinter import *
 import os
+import platform
+print(platform.system())
 
 def window():
     root = Tk()
     myLabel = Label(root, text="Primitive")
     myLabel.pack()
     root.mainloop()
-    os.system('primitive -i C:\\Users\\harol\\Desktop\\yaPal.jpg -o C:\\Users\\harol\\Desktop\\PythonGUI.png -n 100')
+    #Checks which file System is running and base off of that it will run the correct call
+    if(platform.system() == 'Linux' or platform.system() == 'Mac'):
+        os.system('primitive -f -i /home/harold/Desktop/index.jpeg -o /home/harold/Desktop/output.png -n 100')
+    else:
+        os.system('primitive -f -i C:\\Users\\harol\\Desktop\\yaPal.jpg -o C:\\Users\\harol\\Desktop\\PythonGUI.png -n 100')
 window()
 
 
