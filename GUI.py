@@ -9,6 +9,7 @@ def window():
     myLabel.pack()
     root.mainloop()
     #Checks which file System is running and base off of that it will run the correct call
+    #The call in there is an example
     if(platform.system() == 'Linux' or platform.system() == 'Mac'):
         os.system('primitive -f -i /home/harold/Desktop/index.jpeg -o /home/harold/Desktop/output.png -n 100')
     else:
