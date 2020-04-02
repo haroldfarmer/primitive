@@ -20,6 +20,7 @@ type Model struct {
 	Colors     []Color
 	Scores     []float64
 	Workers    []*Worker
+	Filter     int
 }
 
 func NewModel(target image.Image, background Color, size, numWorkers int) *Model {
@@ -100,10 +101,10 @@ func (model *Model) SVG() string {
 	return strings.Join(lines, "\n")
 }
 
-func (model *Model) Add(shape Shape, alpha int) {
+func (model *Model) Add(shape Shape, alpha int, filter int) {
 	before := copyRGBA(model.Current)
 	lines := shape.Rasterize()
-	color := computeColor(model.Target, model.Current, lines, alpha)
+	color := computeColor(model.Target, model.Current, lines, alpha, filter)
 	drawLines(model.Current, color, lines)
 	score := differencePartial(model.Target, before, model.Current, model.Score, lines)
 
@@ -116,10 +117,10 @@ func (model *Model) Add(shape Shape, alpha int) {
 	shape.Draw(model.Context, model.Scale)
 }
 
-func (model *Model) Step(shapeType ShapeType, alpha, repeat int) int {
-	state := model.runWorkers(shapeType, alpha, 1000, 100, 16)
+func (model *Model) Step(shapeType ShapeType, alpha, repeat int, filter int) int {
+	state := model.runWorkers(shapeType, alpha, 1000, 100, 16, filter)
 	// state = HillClimb(state, 1000).(*State)
-	model.Add(state.Shape, state.Alpha)
+	model.Add(state.Shape, state.Alpha, filter)
 
 	for i := 0; i < repeat; i++ {
 		state.Worker.Init(model.Current, model.Score)
@@ -129,7 +130,7 @@ func (model *Model) Step(shapeType ShapeType, alpha, repeat int) int {
 		if a == b {
 			break
 		}
-		model.Add(state.Shape, state.Alpha)
+		model.Add(state.Shape, state.Alpha, filter)
 	}
 
 	// for _, w := range model.Workers[1:] {
@@ -144,7 +145,7 @@ func (model *Model) Step(shapeType ShapeType, alpha, repeat int) int {
 	return counter
 }
 
-func (model *Model) runWorkers(t ShapeType, a, n, age, m int) *State {
+func (model *Model) runWorkers(t ShapeType, a, n, age, m, filter int) *State {
 	wn := len(model.Workers)
 	ch := make(chan *State, wn)
 	wm := m / wn
@@ -154,7 +155,7 @@ func (model *Model) runWorkers(t ShapeType, a, n, age, m int) *State {
 	for i := 0; i < wn; i++ {
 		worker := model.Workers[i]
 		worker.Init(model.Current, model.Score)
-		go model.runWorker(worker, t, a, n, age, wm, ch)
+		go model.runWorker(worker, t, a, n, age, wm, filter, ch)
 	}
 	var bestEnergy float64
 	var bestState *State
@@ -169,6 +170,6 @@ func (model *Model) runWorkers(t ShapeType, a, n, age, m int) *State {
 	return bestState
 }
 
-func (model *Model) runWorker(worker *Worker, t ShapeType, a, n, age, m int, ch chan *State) {
-	ch <- worker.BestHillClimbState(t, a, n, age, m)
+func (model *Model) runWorker(worker *Worker, t ShapeType, a, n, age, m, filter int, ch chan *State) {
+	ch <- worker.BestHillClimbState(t, a, n, age, m, filter)
 }
