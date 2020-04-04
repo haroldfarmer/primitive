@@ -31,36 +31,43 @@ def input():
 def output():
     path = tk.filedialog.askdirectory()
     global outputPath
-    outputPath = path
+    
     output_entry.delete(1, tk.END)  # Remove current text in entry
     output_entry.insert(0, path)  # Insert the 'path'
     # Checks to see if output path contans file extension
-    if search("png", outputPath):
-        makePhoto()
-    elif search("jpg", outputPath):
-        makePhoto()
-    elif search("svg", outputPath):
-        makePhoto()
-    elif search("gif", outputPath):
-        makePhoto()
+    if search("png", path):
+        outputPath = path
+    elif search("jpg", path):
+        outputPath = path
+    elif search("svg", path):
+        outputPath = path
+    elif search("gif", path):
+        outputPath = path
     else:
         messagebox.showinfo("Error", "No Output Name/File Extension")
-        
+
 
 def makePhoto():
-    print("THis is input" + inputPath)
-    print("THis is output %s" %(outputPath))
     try:
-        os.system("primitive -i %s -o %s -n 100 -f 2" %(inputPath,outputPath))
+        alphaInput = alphaNum.get()
+        if alphaInput == '':
+            os.system("primitive -i %s -o %s -n 100 -f 2" %(inputPath,outputPath))
+            print("here")
+            return
+        else:
+            print(alphaInput)
+            os.system("primitive -a %s -i %s -o %s -n 100 -f 2" %(alphaInput,inputPath,outputPath))
+            return
+            
     except OSError as e:
         raise e
 	
+def start():
+    if inputPath != '' or outputPath != '':
+        makePhoto()
+    else:
+        messagebox.showinfo("Error", "No Output/Input File!")
 
-    	
-
-	
-	
-	
 top_frame = tk.Frame(master)
 bottom_frame = tk.Frame(master)
 line = tk.Frame(master, height=1, width=400, bg="grey80", relief='groove')
@@ -79,8 +86,12 @@ browse1 = tk.Button(top_frame, text="Browse", command=input)
 output_path = tk.Label(bottom_frame, text="Output Path:")
 output_entry = tk.Entry(bottom_frame, text="", width=40)
 browse2 = tk.Button(bottom_frame, text="Browse", command=output)
-	
-begin_button = tk.Button(bottom_frame, text='Begin!') #beginButton	
+
+alphaLabel = tk.Label(top_frame, text="Alpha:")
+alphaNum = tk.Entry(top_frame,width=40)
+
+
+begin_button = tk.Button(bottom_frame, text='Begin!',command=start) #beginButton	
 
 top_frame.pack(side=tk.TOP)
 line.pack(pady=10)
@@ -93,6 +104,9 @@ browse1.pack(pady=5)
 output_path.pack(pady=5)
 output_entry.pack(pady=5)
 browse2.pack(pady=5)
+
+alphaLabel.pack(pady=5)
+alphaNum.pack(pady=5)
 
 begin_button.pack(pady=20, fill=tk.X)
 
