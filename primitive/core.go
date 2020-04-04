@@ -63,8 +63,10 @@ func applyFilter(filter, r, g, b, alpha int) Color {
 }
 
 func GrayScaleFilter(r, g, b, alpha int) Color {
-	// TODO: apply gray scale algorithm
-	return Color{r, g, b, alpha}
+	newRed := int(0.21 * float64(r))
+	newGreen := int(0.72 * float64(g))
+	newBlue := int(0.07 * float64(b))
+	return Color{newRed, newGreen, newBlue, alpha}
 }
 
 func SepiaFilter(r, g, b, alpha int) Color {
@@ -82,7 +84,7 @@ func SepiaFilter(r, g, b, alpha int) Color {
 		tb = 255
 	}
 
-	return Color{r, g, b, alpha}
+	return Color{tr, tg, tb, alpha}
 }
 
 func NegativeFilter(r, g, b, alpha int) Color {
