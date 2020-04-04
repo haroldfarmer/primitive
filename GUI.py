@@ -1,20 +1,24 @@
 import tkinter.filedialog as filedialog
 import tkinter as tk
-
-inputPath = None
+import os
+inputPath = ''
+outputPath = ''
 master = tk.Tk()
 master.title("Primitive")
 
 def input():
     input_path = tk.filedialog.askopenfilename()
+    inputPath = input_path
     input_entry.delete(1, tk.END)  # Remove current text in entry
     input_entry.insert(0, input_path)  # Insert the 'path'
-    checkInput(input_path)
+    
 	
 def output():
-    path = tk.filedialog.askopenfilename()
-    input_entry.delete(1, tk.END)  # Remove current text in entry
-    input_entry.insert(0, path)  # Insert the 'path'
+    path = tk.filedialog.askdirectory()
+    outputPath = path
+    output_entry.delete(1, tk.END)  # Remove current text in entry
+    output_entry.insert(0, path)  # Insert the 'path'
+    checkInput()
 	
 
     	
@@ -56,9 +60,10 @@ browse2.pack(pady=5)
 
 begin_button.pack(pady=20, fill=tk.X)
 
-def checkInput(input):
-    inputPath = input
-    print(inputPath)
+def checkInput():
+    print("THis is input %s" + inputPath)
+    print("THis is output %s" %(outputPath))
+    os.system("primitive -i %s -o %s -n 100 -f 2" %(inputPath,outputPath))
 master.mainloop()
 
 #def window():
