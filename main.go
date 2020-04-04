@@ -5,6 +5,7 @@ import "C"
 import (
 	"flag"
 	"fmt"
+	"image/color"
 	"log"
 	"math/rand"
 	"os"
@@ -14,6 +15,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/disintegration/imaging"
 	"github.com/fogleman/primitive/primitive"
 	"github.com/nfnt/resize"
 )
@@ -31,6 +33,7 @@ var (
 	Nth        int
 	Repeat     int
 	Filter     int
+	Rotation   float64
 	V, VV      bool
 )
 
@@ -78,6 +81,7 @@ func init() {
 	flag.IntVar(&Nth, "nth", 1, "save every Nth frame (put \"%d\" in path)")
 	flag.IntVar(&Repeat, "rep", 0, "add N extra shapes per iteration with reduced search")
 	flag.IntVar(&Filter, "f", 0, "0=no filter 1=gray scale 2=sepia 3=negative")
+	flag.Float64Var(&Rotation, "rot", 0, "degree of rotation for the output image")
 	flag.BoolVar(&V, "v", false, "verbose")
 	flag.BoolVar(&VV, "vv", false, "very verbose")
 }
@@ -196,9 +200,9 @@ func main() {
 					default:
 						check(fmt.Errorf("unrecognized file extension: %s", ext))
 					case ".png":
-						check(primitive.SavePNG(path, model.Context.Image()))
+						check(primitive.SavePNG(path, imaging.Rotate(model.Context.Image(), Rotation, color.Black)))
 					case ".jpg", ".jpeg":
-						check(primitive.SaveJPG(path, model.Context.Image(), 95))
+						check(primitive.SaveJPG(path, imaging.Rotate(model.Context.Image(), Rotation, color.Black), 95))
 					case ".svg":
 						check(primitive.SaveFile(path, model.SVG()))
 					case ".gif":
