@@ -32,6 +32,7 @@ def makePhoto():
 	
 
     	
+
 	
 	
 	
@@ -70,7 +71,6 @@ browse2.pack(pady=5)
 
 begin_button.pack(pady=20, fill=tk.X)
 
-
 master.mainloop()
 
 #def window():
@@ -103,5 +103,4 @@ master.mainloop()
     #allows the user to select the photo they want
     #import easygui
     #file = easygui.fileopenbox()
-
 
