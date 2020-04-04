@@ -1,20 +1,24 @@
 import tkinter.filedialog as filedialog
 import tkinter as tk
 
+inputPath = None
 master = tk.Tk()
 master.title("Primitive")
 
 def input():
     input_path = tk.filedialog.askopenfilename()
+    inputPath = input_path
     input_entry.delete(1, tk.END)  # Remove current text in entry
     input_entry.insert(0, input_path)  # Insert the 'path'
+    checkInput()
 	
 def output():
     path = tk.filedialog.askopenfilename()
     input_entry.delete(1, tk.END)  # Remove current text in entry
     input_entry.insert(0, path)  # Insert the 'path'
 	
-	
+
+    	
 	
 	
 	
@@ -53,7 +57,11 @@ browse2.pack(pady=5)
 
 begin_button.pack(pady=20, fill=tk.X)
 
-	
+def checkInput():
+    if inputPath is not None:
+        print(inputPath)
+    else:
+        print("Note none")
 master.mainloop()
 
 #def window():
@@ -86,3 +94,4 @@ master.mainloop()
     #allows the user to select the photo they want
     #import easygui
     #file = easygui.fileopenbox()
+
