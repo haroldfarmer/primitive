@@ -82,7 +82,7 @@ func SepiaFilter(r, g, b, alpha int) Color {
 		tb = 255
 	}
 
-	return Color{r, g, b, alpha}
+	return Color{tr, tg, tb, alpha}
 }
 
 func NegativeFilter(r, g, b, alpha int) Color {
