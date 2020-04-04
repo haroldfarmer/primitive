@@ -198,13 +198,17 @@ func main() {
 						path = fmt.Sprintf(output, frame)
 					}
 					primitive.Log(1, "writing %s\n", path)
+
+					adjustedImage := imaging.AdjustBrightness(model.Context.Image(), Brightness)
+					adjustedImage = imaging.Rotate(adjustedImage, Rotation, color.Black)
+
 					switch ext {
 					default:
 						check(fmt.Errorf("unrecognized file extension: %s", ext))
 					case ".png":
-						check(primitive.SavePNG(path, imaging.AdjustBrightness(imaging.Rotate(model.Context.Image(), Rotation, color.Black), Brightness)))
+						check(primitive.SavePNG(path, adjustedImage))
 					case ".jpg", ".jpeg":
-						check(primitive.SaveJPG(path, imaging.AdjustBrightness(imaging.Rotate(model.Context.Image(), Rotation, color.Black), Brightness), 95))
+						check(primitive.SaveJPG(path, adjustedImage, 95))
 					case ".svg":
 						check(primitive.SaveFile(path, model.SVG()))
 					case ".gif":
