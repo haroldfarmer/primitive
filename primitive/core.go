@@ -68,7 +68,20 @@ func GrayScaleFilter(r, g, b, alpha int) Color {
 }
 
 func SepiaFilter(r, g, b, alpha int) Color {
-	// TODO: apply sepia algorithm
+	var tr = int(0.339*float64(r) + 0.768*float64(g) + 0.189*float64(b))
+	var tg = int(0.349*float64(r) + 0.686*float64(g) + 0.168*float64(b))
+	var tb = int(0.272*float64(r) + 0.534*float64(g) + 0.131*float64(b))
+
+	if tr > 255 {
+		tr = 255
+	}
+	if tg > 255 {
+		tg = 255
+	}
+	if tb > 255 {
+		tb = 255
+	}
+
 	return Color{r, g, b, alpha}
 }
 
