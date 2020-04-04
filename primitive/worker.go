@@ -9,16 +9,17 @@ import (
 )
 
 type Worker struct {
-	W, H       int
-	Target     *image.RGBA
-	Current    *image.RGBA
-	Buffer     *image.RGBA
-	Rasterizer *raster.Rasterizer
-	Lines      []Scanline
-	Heatmap    *Heatmap
-	Rnd        *rand.Rand
-	Score      float64
-	Counter    int
+	W, H         int
+	Target       *image.RGBA
+	Current      *image.RGBA
+	Buffer       *image.RGBA
+	Rasterizer   *raster.Rasterizer
+	Lines        []Scanline
+	Heatmap      *Heatmap
+	Rnd          *rand.Rand
+	Score        float64
+	Counter      int
+	TargetFilter int
 }
 
 func NewWorker(target *image.RGBA) *Worker {
@@ -47,15 +48,16 @@ func (worker *Worker) Energy(shape Shape, alpha int) float64 {
 	worker.Counter++
 	lines := shape.Rasterize()
 	// worker.Heatmap.Add(lines)
-	color := computeColor(worker.Target, worker.Current, lines, alpha)
+	color := computeColor(worker.Target, worker.Current, lines, alpha, worker.TargetFilter)
 	copyLines(worker.Buffer, worker.Current, lines)
 	drawLines(worker.Buffer, color, lines)
 	return differencePartial(worker.Target, worker.Current, worker.Buffer, worker.Score, lines)
 }
 
-func (worker *Worker) BestHillClimbState(t ShapeType, a, n, age, m int) *State {
+func (worker *Worker) BestHillClimbState(t ShapeType, a, n, age, m, filter int) *State {
 	var bestEnergy float64
 	var bestState *State
+	worker.TargetFilter = filter
 	for i := 0; i < m; i++ {
 		state := worker.BestRandomState(t, a, n)
 		before := state.Energy()
