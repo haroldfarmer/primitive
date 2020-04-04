@@ -16,6 +16,7 @@ import (
 
 	"github.com/fogleman/primitive/primitive"
 	"github.com/nfnt/resize"
+	"github.com/disintegration/imaging"
 )
 
 var (
