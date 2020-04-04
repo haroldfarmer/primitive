@@ -7,10 +7,9 @@ master.title("Primitive")
 
 def input():
     input_path = tk.filedialog.askopenfilename()
-    inputPath = input_path
     input_entry.delete(1, tk.END)  # Remove current text in entry
     input_entry.insert(0, input_path)  # Insert the 'path'
-    checkInput()
+    checkInput(input_path)
 	
 def output():
     path = tk.filedialog.askopenfilename()
@@ -57,11 +56,9 @@ browse2.pack(pady=5)
 
 begin_button.pack(pady=20, fill=tk.X)
 
-def checkInput():
-    if inputPath is not None:
-        print(inputPath)
-    else:
-        print("Note none")
+def checkInput(input):
+    inputPath = input
+    print(inputPath)
 master.mainloop()
 
 #def window():
