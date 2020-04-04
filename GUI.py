@@ -1,13 +1,14 @@
 import tkinter.filedialog as filedialog
 import tkinter as tk
 import os
-inputPath = ''
-outputPath = ''
+inputPath = ''# Global variable to store inputPath
+outputPath = ''# Global variable to store outputPath
 master = tk.Tk()
 master.title("Primitive")
 
 def input():
     input_path = tk.filedialog.askopenfilename()
+    global inputPath
     inputPath = input_path
     input_entry.delete(1, tk.END)  # Remove current text in entry
     input_entry.insert(0, input_path)  # Insert the 'path'
@@ -15,10 +16,19 @@ def input():
 	
 def output():
     path = tk.filedialog.askdirectory()
+    global outputPath
     outputPath = path
     output_entry.delete(1, tk.END)  # Remove current text in entry
     output_entry.insert(0, path)  # Insert the 'path'
-    checkInput()
+    makePhoto()
+
+def makePhoto():
+    print("THis is input" + inputPath)
+    print("THis is output %s" %(outputPath))
+    try:
+        os.system("primitive -i %s -o %s -n 100 -f 2" %(inputPath,outputPath))
+    except OSError as e:
+        raise e
 	
 
     	
@@ -60,10 +70,7 @@ browse2.pack(pady=5)
 
 begin_button.pack(pady=20, fill=tk.X)
 
-def checkInput():
-    print("THis is input %s" + inputPath)
-    print("THis is output %s" %(outputPath))
-    os.system("primitive -i %s -o %s -n 100 -f 2" %(inputPath,outputPath))
+
 master.mainloop()
 
 #def window():
@@ -96,4 +103,5 @@ master.mainloop()
     #allows the user to select the photo they want
     #import easygui
     #file = easygui.fileopenbox()
+
 
