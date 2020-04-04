@@ -5,6 +5,7 @@ import "C"
 import (
 	"flag"
 	"fmt"
+	"image/color"
 	"log"
 	"math/rand"
 	"os"
@@ -14,9 +15,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/disintegration/imaging"
 	"github.com/fogleman/primitive/primitive"
 	"github.com/nfnt/resize"
-	"github.com/disintegration/imaging"
 )
 
 var (
@@ -199,9 +200,9 @@ func main() {
 					default:
 						check(fmt.Errorf("unrecognized file extension: %s", ext))
 					case ".png":
-						check(primitive.SavePNG(path, model.Context.Image()))
+						check(primitive.SavePNG(path, imaging.Rotate(model.Context.Image(), Rotation, color.Black)))
 					case ".jpg", ".jpeg":
-						check(primitive.SaveJPG(path, model.Context.Image(), 95))
+						check(primitive.SaveJPG(path, imaging.Rotate(model.Context.Image(), Rotation, color.Black), 95))
 					case ".svg":
 						check(primitive.SaveFile(path, model.SVG()))
 					case ".gif":
