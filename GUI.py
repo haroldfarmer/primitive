@@ -51,7 +51,7 @@ def output():
 def grayScaleFilter():
     global grayScale
     grayScale = True
-    return grayScale
+    
 
 
 def makePhoto():
@@ -80,7 +80,7 @@ def makePhoto():
         raise e
 	
 def start():
-    if inputPath != '' or outputPath != '':
+    if inputPath != '' and outputPath != '':
         makePhoto()
     else:
         messagebox.showinfo("Error", "No Output/Input File!")
