@@ -6,6 +6,7 @@ from re import search
 
 inputPath = ''# Global variable to store inputPath
 outputPath = ''# Global variable to store outputPath
+grayScale = False
 master = tk.Tk()
 master.title("Primitive")
 
@@ -46,16 +47,29 @@ def output():
     else:
         messagebox.showinfo("Error", "No Output Name/File Extension")
 
+#Checks to see if grayscal is selected
+def grayScaleFilter():
+    global grayScale
+    grayScale = True
+    return grayScale
+
 
 def makePhoto():
+    # Todo Figure out a way to take in user input from buttons/input boxes and
+    # Not have to have if statements for every possibility but for now because 
+    # Of time constraints and limited knowledge on tkinter if statements will 
+    # be sufficent
     try:
         alphaInput = alphaNum.get()
-        if alphaInput == '':
+        if alphaInput == '' and grayScale == False:
             os.system("primitive -i %s -o %s -n 100 -f 2" %(inputPath,outputPath))
-            print("here")
+            print("false")
+            return
+        elif alphaInput == '' and grayScale == True:
+            os.system("primitive -f 1 -i %s -o %s -n 100 -f 2" %(inputPath,outputPath))
+            print("True")
             return
         else:
-            print(alphaInput)
             os.system("primitive -a %s -i %s -o %s -n 100 -f 2" %(alphaInput,inputPath,outputPath))
             return
             
@@ -87,8 +101,13 @@ output_path = tk.Label(bottom_frame, text="Output Path:")
 output_entry = tk.Entry(bottom_frame, text="", width=40)
 browse2 = tk.Button(bottom_frame, text="Browse", command=output)
 
+# alpha label and input 
 alphaLabel = tk.Label(top_frame, text="Alpha:")
 alphaNum = tk.Entry(top_frame,width=40)
+
+#grayscale label and button
+grayScaleLabel = tk.Label(top_frame, text="Gray Scale:")
+grayScaleButton = tk.Button(bottom_frame, text="Gray Scale", command=grayScaleFilter)
 
 
 begin_button = tk.Button(bottom_frame, text='Begin!',command=start) #beginButton	
@@ -107,6 +126,9 @@ browse2.pack(pady=5)
 
 alphaLabel.pack(pady=5)
 alphaNum.pack(pady=5)
+
+grayScaleLabel.pack(pady=5)
+grayScaleButton.pack(pady=5)
 
 begin_button.pack(pady=20, fill=tk.X)
 
