@@ -61,6 +61,7 @@ def makePhoto():
     # be sufficent
     try:
         alphaInput = alphaNum.get()
+        global grayScale
         if alphaInput == '' and grayScale == False:
             os.system("primitive -i %s -o %s -n 100 -f 2" %(inputPath,outputPath))
             print("false")
@@ -68,6 +69,8 @@ def makePhoto():
         elif alphaInput == '' and grayScale == True:
             os.system("primitive -f 1 -i %s -o %s -n 100 -f 2" %(inputPath,outputPath))
             print("True")
+            
+            grayScale = False
             return
         else:
             os.system("primitive -a %s -i %s -o %s -n 100 -f 2" %(alphaInput,inputPath,outputPath))
