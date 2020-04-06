@@ -8,6 +8,7 @@ from re import search
 
 inputPath = ''# Global variable to store inputPath
 outputPath = ''# Global variable to store outputPath
+filter = '0'
 master = tk.Tk()
 master.title("Primitive")
 
@@ -71,19 +72,36 @@ def getUrlImage():
         util.getImage(url, outputPath)
         inputPath = outputPath
         
-
+def getFilterOption(*args):
+    global filter
+    filter = selectedFilter.get()
+    if filter == 'Gray Scale':
+        filter = '1'
+    elif filter == 'Sepia':
+        filter = '2'
+    elif filter == 'Negative':
+        filter = '3'
+    elif filter == 'None':
+        filter = '0'#default
+    print(filter)
+    return
+    
 
 def makePhoto():
     # Todo Figure out a way to take in user input from buttons/input boxes and
     # Not have to have if statements for every possibility but for now because 
     # Of time constraints and limited knowledge on tkinter if statements will 
     # be sufficent
+    global filter
     try:
         alphaInput = alphaNum.get()
-        if alphaInput == '':
+        if alphaInput == '' and filter == '':
             os.system("primitive -i %s -o %s -n 100" %(inputPath,outputPath))
             print("false")
             return
+        elif alphaInput == '' and filter != '':
+            print("This is filter", filter)
+            os.system("primitive -f %s -i %s -o %s -n 100" %(filter,inputPath,outputPath))
         else:
             os.system("primitive -a %s -i %s -o %s -n 100 -f 2" %(alphaInput,inputPath,outputPath))
             return
@@ -133,6 +151,7 @@ FILTERS = [
 selectedFilter = StringVar(master)
 selectedFilter.set(FILTERS[0])
 filterOptions = OptionMenu(master,selectedFilter, "None", "Gray Scale", "Sepia", "Negative")
+selectedFilter.trace("w", getFilterOption)
 
 #URL Label, Path, and Button
 imageLabel = tk.Label(bottom_frame, text="URL To Image")
