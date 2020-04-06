@@ -1,6 +1,7 @@
 import tkinter.filedialog as filedialog
 import tkinter as tk
 import os
+import utils as util
 from tkinter import messagebox
 from tkinter import *
 from re import search
@@ -47,6 +48,29 @@ def output():
     else:
         messagebox.showinfo("Error", "No Output Name/File Extension")
     
+def getUrlImage():
+    global inputPath
+    global outputPath
+    url = imageURL.get()
+    ext = util.getExtension(url)#gets the extendsion of the URL
+    outExt = util.getExtension(outputPath)# gets the extension of the output path cause that where the new image file will be named
+    
+    #makes sure that the file trying to be downloaded is the same extension of user input
+    #also makes sure that there are extensions and URL
+    if imageURL == '':
+        messagebox.showinfo("Error", "No URL to Image !")
+        return
+    elif ext == '':
+        messagebox.showinfo("Error", "Please Have an Extension")
+        return
+    elif ext != outExt:
+        messagebox.showinfo("Error", "Extensions Don't Match")
+        return
+    else:
+        print("Here")
+        util.getImage(url, outputPath)
+        inputPath = outputPath
+        
 
 
 def makePhoto():
@@ -96,6 +120,8 @@ browse2 = tk.Button(bottom_frame, text="Browse", command=output)
 alphaLabel = tk.Label(top_frame, text="Alpha:")
 alphaNum = tk.Entry(top_frame,width=40)
 
+
+
 #filter option dropdown
 filterLabel = tk.Label(top_frame, text="Filter:")
 FILTERS = [
@@ -108,7 +134,10 @@ selectedFilter = StringVar(master)
 selectedFilter.set(FILTERS[0])
 filterOptions = OptionMenu(master,selectedFilter, "None", "Gray Scale", "Sepia", "Negative")
 
-
+#URL Label, Path, and Button
+imageLabel = tk.Label(bottom_frame, text="URL To Image")
+imageURL = tk.Entry(bottom_frame, text="",width=40)
+imageButton = tk.Button(bottom_frame, text="Download Image:", command=getUrlImage)
 
 
 begin_button = tk.Button(bottom_frame, text='Begin!',command=start) #beginButton	
@@ -130,6 +159,12 @@ alphaNum.pack(pady=5)
 
 filterLabel.pack(pady=5)
 filterOptions.pack(pady=5)
+
+#URL Labels and Buttons
+imageLabel.pack(pady=5)
+imageURL.pack(pady=5)
+imageButton.pack(pady=5)
+
 
 begin_button.pack(pady=20, fill=tk.X)
 
