@@ -1,12 +1,14 @@
 import tkinter.filedialog as filedialog
 import tkinter as tk
 import os
+import utils as util
 from tkinter import messagebox
+from tkinter import *
 from re import search
 
 inputPath = ''# Global variable to store inputPath
 outputPath = ''# Global variable to store outputPath
-grayScale = False
+filter = '0'
 master = tk.Tk()
 master.title("Primitive")
 
@@ -46,34 +48,62 @@ def output():
         outputPath = path
     else:
         messagebox.showinfo("Error", "No Output Name/File Extension")
-
-#Checks to see if grayscal is selected
-def grayScaleFilter():
-    global grayScale
-    grayScale = True
     
-
+def getUrlImage():
+    global inputPath
+    global outputPath
+    url = imageURL.get()
+    ext = util.getExtension(url)#gets the extendsion of the URL
+    outExt = util.getExtension(outputPath)# gets the extension of the output path cause that where the new image file will be named
+    
+    #makes sure that the file trying to be downloaded is the same extension of user input
+    #also makes sure that there are extensions and URL
+    if imageURL == '':
+        messagebox.showinfo("Error", "No URL to Image !")
+        return
+    elif ext == '':
+        messagebox.showinfo("Error", "Please Have an Extension")
+        return
+    elif ext != outExt:
+        messagebox.showinfo("Error", "Extensions Don't Match")
+        return
+    else:
+        print("Here")
+        util.getImage(url, outputPath)
+        inputPath = outputPath
+        
+def getFilterOption(*args):
+    global filter
+    filter = selectedFilter.get()
+    if filter == 'Gray Scale':
+        filter = '1'
+    elif filter == 'Sepia':
+        filter = '2'
+    elif filter == 'Negative':
+        filter = '3'
+    elif filter == 'None':
+        filter = '0'#default
+    print(filter)
+    return
+    
 
 def makePhoto():
     # Todo Figure out a way to take in user input from buttons/input boxes and
     # Not have to have if statements for every possibility but for now because 
     # Of time constraints and limited knowledge on tkinter if statements will 
     # be sufficent
+    global filter
     try:
         alphaInput = alphaNum.get()
-        global grayScale
-        if alphaInput == '' and grayScale == False:
-            os.system("primitive -i %s -o %s -n 100 -f 2" %(inputPath,outputPath))
+        if alphaInput == '' and filter == '0':
+            os.system("primitive -i %s -o %s -n 100" %(inputPath,outputPath))
             print("false")
             return
-        elif alphaInput == '' and grayScale == True:
-            os.system("primitive -f 1 -i %s -o %s -n 100 -f 2" %(inputPath,outputPath))
-            print("True")
-            
-            grayScale = False
-            return
+        elif alphaInput == '' and filter != '0':
+            print("This is filter", filter)
+            os.system("primitive -f %s -i %s -o %s -n 100" %(filter,inputPath,outputPath))
         else:
-            os.system("primitive -a %s -i %s -o %s -n 100 -f 2" %(alphaInput,inputPath,outputPath))
+            os.system("primitive -f %s -a %s -i %s -o %s -n 100 -f 2" %(filter,alphaInput,inputPath,outputPath))
             return
             
     except OSError as e:
@@ -108,9 +138,25 @@ browse2 = tk.Button(bottom_frame, text="Browse", command=output)
 alphaLabel = tk.Label(top_frame, text="Alpha:")
 alphaNum = tk.Entry(top_frame,width=40)
 
-#grayscale label and button
-grayScaleLabel = tk.Label(top_frame, text="Gray Scale:")
-grayScaleButton = tk.Button(bottom_frame, text="Gray Scale", command=grayScaleFilter)
+
+
+#filter option dropdown
+filterLabel = tk.Label(top_frame, text="Filter:")
+FILTERS = [
+"None",
+"Gray Scale",
+"Sepia",
+"Negative"
+]
+selectedFilter = StringVar(master)
+selectedFilter.set(FILTERS[0])
+filterOptions = OptionMenu(master,selectedFilter, "None", "Gray Scale", "Sepia", "Negative")
+selectedFilter.trace("w", getFilterOption)
+
+#URL Label, Path, and Button
+imageLabel = tk.Label(bottom_frame, text="URL To Image")
+imageURL = tk.Entry(bottom_frame, text="",width=40)
+imageButton = tk.Button(bottom_frame, text="Download Image:", command=getUrlImage)
 
 
 begin_button = tk.Button(bottom_frame, text='Begin!',command=start) #beginButton	
@@ -130,8 +176,14 @@ browse2.pack(pady=5)
 alphaLabel.pack(pady=5)
 alphaNum.pack(pady=5)
 
-grayScaleLabel.pack(pady=5)
-grayScaleButton.pack(pady=5)
+filterLabel.pack(pady=5)
+filterOptions.pack(pady=5)
+
+#URL Labels and Buttons
+imageLabel.pack(pady=5)
+imageURL.pack(pady=5)
+imageButton.pack(pady=5)
+
 
 begin_button.pack(pady=20, fill=tk.X)
 
