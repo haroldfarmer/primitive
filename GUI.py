@@ -95,15 +95,15 @@ def makePhoto():
     global filter
     try:
         alphaInput = alphaNum.get()
-        if alphaInput == '' and filter == '':
+        if alphaInput == '' and filter == '0':
             os.system("primitive -i %s -o %s -n 100" %(inputPath,outputPath))
             print("false")
             return
-        elif alphaInput == '' and filter != '':
+        elif alphaInput == '' and filter != '0':
             print("This is filter", filter)
             os.system("primitive -f %s -i %s -o %s -n 100" %(filter,inputPath,outputPath))
         else:
-            os.system("primitive -a %s -i %s -o %s -n 100 -f 2" %(alphaInput,inputPath,outputPath))
+            os.system("primitive -f %s -a %s -i %s -o %s -n 100 -f 2" %(filter,alphaInput,inputPath,outputPath))
             return
             
     except OSError as e:
