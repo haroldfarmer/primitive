@@ -2,11 +2,11 @@ import tkinter.filedialog as filedialog
 import tkinter as tk
 import os
 from tkinter import messagebox
+from tkinter import *
 from re import search
 
 inputPath = ''# Global variable to store inputPath
 outputPath = ''# Global variable to store outputPath
-grayScale = False
 master = tk.Tk()
 master.title("Primitive")
 
@@ -46,11 +46,6 @@ def output():
         outputPath = path
     else:
         messagebox.showinfo("Error", "No Output Name/File Extension")
-
-#Checks to see if grayscal is selected
-def grayScaleFilter():
-    global grayScale
-    grayScale = True
     
 
 
@@ -61,16 +56,9 @@ def makePhoto():
     # be sufficent
     try:
         alphaInput = alphaNum.get()
-        global grayScale
-        if alphaInput == '' and grayScale == False:
-            os.system("primitive -i %s -o %s -n 100 -f 2" %(inputPath,outputPath))
+        if alphaInput == '':
+            os.system("primitive -i %s -o %s -n 100" %(inputPath,outputPath))
             print("false")
-            return
-        elif alphaInput == '' and grayScale == True:
-            os.system("primitive -f 1 -i %s -o %s -n 100 -f 2" %(inputPath,outputPath))
-            print("True")
-            
-            grayScale = False
             return
         else:
             os.system("primitive -a %s -i %s -o %s -n 100 -f 2" %(alphaInput,inputPath,outputPath))
@@ -108,9 +96,19 @@ browse2 = tk.Button(bottom_frame, text="Browse", command=output)
 alphaLabel = tk.Label(top_frame, text="Alpha:")
 alphaNum = tk.Entry(top_frame,width=40)
 
-#grayscale label and button
-grayScaleLabel = tk.Label(top_frame, text="Gray Scale:")
-grayScaleButton = tk.Button(bottom_frame, text="Gray Scale", command=grayScaleFilter)
+#filter option dropdown
+filterLabel = tk.Label(top_frame, text="Filter:")
+FILTERS = [
+"None",
+"Gray Scale",
+"Sepia",
+"Negative"
+]
+selectedFilter = StringVar(master)
+selectedFilter.set(FILTERS[0])
+filterOptions = OptionMenu(master,selectedFilter, "None", "Gray Scale", "Sepia", "Negative")
+
+
 
 
 begin_button = tk.Button(bottom_frame, text='Begin!',command=start) #beginButton	
@@ -130,8 +128,8 @@ browse2.pack(pady=5)
 alphaLabel.pack(pady=5)
 alphaNum.pack(pady=5)
 
-grayScaleLabel.pack(pady=5)
-grayScaleButton.pack(pady=5)
+filterLabel.pack(pady=5)
+filterOptions.pack(pady=5)
 
 begin_button.pack(pady=20, fill=tk.X)
 
