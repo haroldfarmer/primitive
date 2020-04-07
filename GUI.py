@@ -92,7 +92,8 @@ def makePhoto():
     try:
         alphaInput = alphaEntry.get()
         angleInput = angleEntry.get().replace('\u00B0','')
-        os.system("primitive -f %s -a %s -i %s -o %s -n 100 -rot %s" %(filter,alphaInput,inputPath,outputPath,angleInput))
+        brightnessInput = str(brightnessSlider.get())
+        os.system("primitive -f %s -a %s -i %s -o %s -n 100 -rot %s -b %s" %(filter,alphaInput,inputPath,outputPath,angleInput))
         return
             
     except OSError as e:
@@ -144,8 +145,14 @@ FILTERS = [
 ]
 selectedFilter = StringVar(master)
 selectedFilter.set(FILTERS[0])
-filterOptions = OptionMenu(master,selectedFilter, "None", "Gray Scale", "Sepia", "Negative")
+filterOptions = OptionMenu(top_frame,selectedFilter, "None", "Gray Scale", "Sepia", "Negative")
 selectedFilter.trace("w", getFilterOption)
+
+brightnessLabel = tk.Label(top_frame, text="Brightness:")
+brightnessSlider = Scale(top_frame, from_=-100, to=100, orient=HORIZONTAL)
+
+
+
 
 #URL Label, Path, and Button
 imageLabel = tk.Label(bottom_frame, text="URL To Image")
@@ -175,6 +182,9 @@ angleEntry.pack(pady=5)
 
 filterLabel.pack(pady=5)
 filterOptions.pack(pady=5)
+
+brightnessLabel.pack(pady=5)
+brightnessSlider.pack(pady=5)
 
 #URL Labels and Buttons
 imageLabel.pack(pady=5)
