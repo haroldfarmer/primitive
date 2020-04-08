@@ -1,12 +1,14 @@
 import tkinter.filedialog as filedialog
 import tkinter as tk
 import os
+import utils as util
 from tkinter import messagebox
 from tkinter import *
 from re import search
 
 inputPath = ''# Global variable to store inputPath
 outputPath = ''# Global variable to store outputPath
+filter = '0'
 master = tk.Tk()
 master.title("Primitive")
 
@@ -47,22 +49,51 @@ def output():
     else:
         messagebox.showinfo("Error", "No Output Name/File Extension")
     
-
+def getUrlImage():
+    global inputPath
+    global outputPath
+    url = imageURL.get()
+    ext = util.getExtension(url)#gets the extendsion of the URL
+    outExt = util.getExtension(outputPath)# gets the extension of the output path cause that where the new image file will be named
+    
+    #makes sure that the file trying to be downloaded is the same extension of user input
+    #also makes sure that there are extensions and URL
+    if imageURL == '':
+        messagebox.showinfo("Error", "No URL to Image !")
+        return
+    elif ext == '':
+        messagebox.showinfo("Error", "Please Have an Extension")
+        return
+    elif ext != outExt:
+        messagebox.showinfo("Error", "Extensions Don't Match")
+        return
+    else:
+        print("Here")
+        util.getImage(url, outputPath)
+        inputPath = outputPath
+        
+def getFilterOption(*args):
+    global filter
+    filter = selectedFilter.get()
+    if filter == 'Gray Scale':
+        filter = '1'
+    elif filter == 'Sepia':
+        filter = '2'
+    elif filter == 'Negative':
+        filter = '3'
+    elif filter == 'None':
+        filter = '0'#default
+    print(filter)
+    return
+    
 
 def makePhoto():
-    # Todo Figure out a way to take in user input from buttons/input boxes and
-    # Not have to have if statements for every possibility but for now because 
-    # Of time constraints and limited knowledge on tkinter if statements will 
-    # be sufficent
+    global filter
     try:
-        alphaInput = alphaNum.get()
-        if alphaInput == '':
-            os.system("primitive -i %s -o %s -n 100" %(inputPath,outputPath))
-            print("false")
-            return
-        else:
-            os.system("primitive -a %s -i %s -o %s -n 100 -f 2" %(alphaInput,inputPath,outputPath))
-            return
+        alphaInput = alphaEntry.get()
+        angleInput = angleEntry.get().replace('\u00B0','')
+        os.system("primitive -f %s -a %s -i %s -o %s -n 100 -rot %s" %(filter,alphaInput,inputPath,outputPath,angleInput))
+        return
             
     except OSError as e:
         raise e
@@ -94,7 +125,14 @@ browse2 = tk.Button(bottom_frame, text="Browse", command=output)
 
 # alpha label and input 
 alphaLabel = tk.Label(top_frame, text="Alpha:")
-alphaNum = tk.Entry(top_frame,width=40)
+alphaEntry = tk.Entry(top_frame,width=40)
+alphaEntry.insert(0, "128")
+
+#rotate option
+angleLabel = tk.Label(top_frame, text="Rotate:")
+angleEntry = tk.Entry(top_frame,width=40)
+angleEntry.insert(0, "0\u00B0")
+
 
 #filter option dropdown
 filterLabel = tk.Label(top_frame, text="Filter:")
@@ -107,8 +145,12 @@ FILTERS = [
 selectedFilter = StringVar(master)
 selectedFilter.set(FILTERS[0])
 filterOptions = OptionMenu(master,selectedFilter, "None", "Gray Scale", "Sepia", "Negative")
+selectedFilter.trace("w", getFilterOption)
 
-
+#URL Label, Path, and Button
+imageLabel = tk.Label(bottom_frame, text="URL To Image")
+imageURL = tk.Entry(bottom_frame, text="",width=40)
+imageButton = tk.Button(bottom_frame, text="Download Image:", command=getUrlImage)
 
 
 begin_button = tk.Button(bottom_frame, text='Begin!',command=start) #beginButton	
@@ -126,10 +168,19 @@ output_entry.pack(pady=5)
 browse2.pack(pady=5)
 
 alphaLabel.pack(pady=5)
-alphaNum.pack(pady=5)
+alphaEntry.pack(pady=5)
+
+angleLabel.pack(pady=5)
+angleEntry.pack(pady=5)
 
 filterLabel.pack(pady=5)
 filterOptions.pack(pady=5)
+
+#URL Labels and Buttons
+imageLabel.pack(pady=5)
+imageURL.pack(pady=5)
+imageButton.pack(pady=5)
+
 
 begin_button.pack(pady=20, fill=tk.X)
 

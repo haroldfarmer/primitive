@@ -202,6 +202,7 @@ func main() {
 					primitive.Log(1, "writing %s\n", path)
 
 					adjustedImage := imaging.AdjustBrightness(model.Context.Image(), Brightness)
+					adjustedImage = imaging.Blur(adjustedImage, Blur)
 					adjustedImage = imaging.Rotate(adjustedImage, Rotation, color.Black)
 
 					switch ext {
