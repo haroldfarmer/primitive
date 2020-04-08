@@ -92,7 +92,7 @@ def makePhoto():
     try:
         alphaInput = alphaEntry.get()
         angleInput = angleEntry.get().replace('\u00B0','')
-        os.system("primitive -f %s -a %s -i %s -o %s -n 100 -r %s" %(filter,alphaInput,inputPath,outputPath,angleInput))
+        os.system("primitive -f %s -a %s -i %s -o %s -n 100 -z %s" %(filter,alphaInput,inputPath,outputPath,angleInput))
         return
             
     except OSError as e:
