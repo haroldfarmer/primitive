@@ -6,7 +6,7 @@ from tkinter import messagebox
 from tkinter import *
 from re import search
 import PIL
-from PIL import ImageTk
+from PIL import ImageTk as a
 from PIL import Image
 
 inputPath = ''# Global variable to store inputPath
@@ -51,7 +51,26 @@ def output():
         outputPath = path
     else:
         messagebox.showinfo("Error", "No Output Name/File Extension")
+
+def displayImage():
+        #creates a new window to display preview
+        img = Image.open(outputPath)
+        img = img.resize((250,250),Image.ANTIALIAS)
+        img = a.PhotoImage(img)
+        newwin = tk.Toplevel(master)
+        newwin.title("Preview")
+        newwin.title('New Window')
+        newwin.geometry("500x500") 
+        newwin.resizable(0, 0)
     
+        display = Label(newwin, text="Preview")
+        display.pack()
+    
+        l=tk.Label(newwin,image=img)
+        l.image = img
+    
+        l.pack(pady=5)
+
 def getUrlImage():
     global inputPath
     global outputPath
