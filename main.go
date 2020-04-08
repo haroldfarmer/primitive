@@ -33,9 +33,8 @@ var (
 	Nth        int
 	Repeat     int
 	Filter     int
-
 	Brightness float64
-
+	Blur       float64
 	Rotation   float64
 	V, VV      bool
 )
@@ -84,9 +83,8 @@ func init() {
 	flag.IntVar(&Nth, "nth", 1, "save every Nth frame (put \"%d\" in path)")
 	flag.IntVar(&Repeat, "rep", 0, "add N extra shapes per iteration with reduced search")
 	flag.IntVar(&Filter, "f", 0, "0=no filter 1=gray scale 2=sepia 3=negative")
-
 	flag.Float64Var(&Brightness, "b", 0, "percentage change of brightness [-100,100], 0 giving the original image")
-
+	flag.Float64Var(&Blur, "blur", 0, "produces a blurred version of the image, must be a positive value")
 	flag.Float64Var(&Rotation, "rot", 0, "degree of rotation for the output image")
 	flag.BoolVar(&V, "v", false, "verbose")
 	flag.BoolVar(&VV, "vv", false, "very verbose")
@@ -204,6 +202,7 @@ func main() {
 					primitive.Log(1, "writing %s\n", path)
 
 					adjustedImage := imaging.AdjustBrightness(model.Context.Image(), Brightness)
+					adjustedImage = imaging.Blur(adjustedImage, Blur)
 					adjustedImage = imaging.Rotate(adjustedImage, Rotation, color.Black)
 
 					switch ext {
