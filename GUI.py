@@ -64,11 +64,11 @@ def displayImage():
         newwin.resizable(0, 0)
     
         display = Label(newwin, text="Preview")
-        display.pack()
+        
     
         l=tk.Label(newwin,image=img)
         l.image = img
-    
+        display.pack()
         l.pack(pady=5)
 
 def getUrlImage():
