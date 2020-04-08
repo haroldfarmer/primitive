@@ -5,6 +5,9 @@ import utils as util
 from tkinter import messagebox
 from tkinter import *
 from re import search
+import PIL
+from PIL import ImageTk
+from PIL import Image
 
 inputPath = ''# Global variable to store inputPath
 outputPath = ''# Global variable to store outputPath
@@ -71,7 +74,9 @@ def getUrlImage():
         print("Here")
         util.getImage(url, outputPath)
         inputPath = outputPath
-        
+
+
+
 def getFilterOption(*args):
     global filter
     filter = selectedFilter.get()
@@ -93,6 +98,7 @@ def makePhoto():
         alphaInput = alphaEntry.get()
         angleInput = angleEntry.get().replace('\u00B0','')
         os.system("primitive -f %s -a %s -i %s -o %s -n 100 -rot %s" %(filter,alphaInput,inputPath,outputPath,angleInput))
+        #displayImage()
         return
             
     except OSError as e:
@@ -180,6 +186,7 @@ filterOptions.pack(pady=5)
 imageLabel.pack(pady=5)
 imageURL.pack(pady=5)
 imageButton.pack(pady=5)
+
 
 
 begin_button.pack(pady=20, fill=tk.X)
