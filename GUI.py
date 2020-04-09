@@ -5,6 +5,9 @@ import utils as util
 from tkinter import messagebox
 from tkinter import *
 from re import search
+import PIL
+from PIL import ImageTk as a
+from PIL import Image
 
 inputPath = ''# Global variable to store inputPath
 outputPath = ''# Global variable to store outputPath
@@ -48,7 +51,26 @@ def output():
         outputPath = path
     else:
         messagebox.showinfo("Error", "No Output Name/File Extension")
+
+def displayImage():
+        #creates a new window to display preview
+        img = Image.open(outputPath)
+        img = img.resize((250,250),Image.ANTIALIAS)
+        img = a.PhotoImage(img)
+        newwin = tk.Toplevel(master)
+        newwin.title("Preview")
+        newwin.title('New Window')
+        newwin.geometry("500x500") 
+        newwin.resizable(0, 0)
     
+        display = Label(newwin, text="Preview")
+        
+    
+        l=tk.Label(newwin,image=img)
+        l.image = img
+        display.pack()
+        l.pack(pady=5)
+
 def getUrlImage():
     global inputPath
     global outputPath
@@ -71,7 +93,9 @@ def getUrlImage():
         print("Here")
         util.getImage(url, outputPath)
         inputPath = outputPath
-        
+
+
+
 def getFilterOption(*args):
     global filter
     filter = selectedFilter.get()
@@ -92,6 +116,7 @@ def makePhoto():
     try:
         alphaInput = alphaEntry.get()
         angleInput = angleEntry.get().replace('\u00B0','')
+
 
         brightnessInput = str(brightnessSlider.get())
         os.system("primitive -f %s -a %s -i %s -o %s -n 100 -rot %s -b %s" %(filter,alphaInput,inputPath,outputPath,angleInput))
@@ -198,6 +223,10 @@ imageURL.pack(pady=5)
 imageButton.pack(pady=5)
 
 help_button = tk.Button(bottom_frame, text = "Help!", command = help)
+
+
+
+begin_button.pack(pady=20, fill=tk.X)
 
 
 begin_button.pack(pady=20, fill=tk.X)
