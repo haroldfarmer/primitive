@@ -92,8 +92,10 @@ def makePhoto():
     try:
         alphaInput = alphaEntry.get()
         angleInput = angleEntry.get().replace('\u00B0','')
+
         brightnessInput = str(brightnessSlider.get())
         os.system("primitive -f %s -a %s -i %s -o %s -n 100 -rot %s -b %s" %(filter,alphaInput,inputPath,outputPath,angleInput))
+
         return
             
     except OSError as e:
