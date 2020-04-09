@@ -116,7 +116,7 @@ def makePhoto():
     try:
         alphaInput = alphaEntry.get()
         angleInput = angleEntry.get().replace('\u00B0','')
-        os.system("primitive -f %s -a %s -i %s -o %s -n 100" %(filter,alphaInput,inputPath,outputPath))
+        os.system("primitive -f %s -a %s -i %s -o %s -n 100 -rot %s" %(filter,alphaInput,inputPath,outputPath,angleInput))
         displayImage()
         return
             
