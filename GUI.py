@@ -88,23 +88,13 @@ def getFilterOption(*args):
     
 
 def makePhoto():
-    # Todo Figure out a way to take in user input from buttons/input boxes and
-    # Not have to have if statements for every possibility but for now because 
-    # Of time constraints and limited knowledge on tkinter if statements will 
-    # be sufficent
     global filter
     try:
-        alphaInput = alphaNum.get()
-        if alphaInput == '' and filter == '0':
-            os.system("primitive -i %s -o %s -n 100" %(inputPath,outputPath))
-            print("false")
-            return
-        elif alphaInput == '' and filter != '0':
-            print("This is filter", filter)
-            os.system("primitive -f %s -i %s -o %s -n 100" %(filter,inputPath,outputPath))
-        else:
-            os.system("primitive -f %s -a %s -i %s -o %s -n 100 -f 2" %(filter,alphaInput,inputPath,outputPath))
-            return
+        alphaInput = alphaEntry.get()
+        angleInput = angleEntry.get().replace('\u00B0','')
+        brightnessInput = str(brightnessSlider.get())
+        os.system("primitive -f %s -a %s -i %s -o %s -n 100 -rot %s -b %s" %(filter,alphaInput,inputPath,outputPath,angleInput))
+        return
             
     except OSError as e:
         raise e
@@ -136,8 +126,13 @@ browse2 = tk.Button(bottom_frame, text="Browse", command=output)
 
 # alpha label and input 
 alphaLabel = tk.Label(top_frame, text="Alpha:")
-alphaNum = tk.Entry(top_frame,width=40)
+alphaEntry = tk.Entry(top_frame,width=40)
+alphaEntry.insert(0, "128")
 
+#rotate option
+angleLabel = tk.Label(top_frame, text="Rotate:")
+angleEntry = tk.Entry(top_frame,width=40)
+angleEntry.insert(0, "0\u00B0")
 
 
 #filter option dropdown
@@ -150,8 +145,14 @@ FILTERS = [
 ]
 selectedFilter = StringVar(master)
 selectedFilter.set(FILTERS[0])
-filterOptions = OptionMenu(master,selectedFilter, "None", "Gray Scale", "Sepia", "Negative")
+filterOptions = OptionMenu(top_frame,selectedFilter, "None", "Gray Scale", "Sepia", "Negative")
 selectedFilter.trace("w", getFilterOption)
+
+brightnessLabel = tk.Label(top_frame, text="Brightness:")
+brightnessSlider = Scale(top_frame, from_=-100, to=100, orient=HORIZONTAL)
+
+
+
 
 #URL Label, Path, and Button
 imageLabel = tk.Label(bottom_frame, text="URL To Image")
@@ -174,10 +175,16 @@ output_entry.pack(pady=5)
 browse2.pack(pady=5)
 
 alphaLabel.pack(pady=5)
-alphaNum.pack(pady=5)
+alphaEntry.pack(pady=5)
+
+angleLabel.pack(pady=5)
+angleEntry.pack(pady=5)
 
 filterLabel.pack(pady=5)
 filterOptions.pack(pady=5)
+
+brightnessLabel.pack(pady=5)
+brightnessSlider.pack(pady=5)
 
 #URL Labels and Buttons
 imageLabel.pack(pady=5)
