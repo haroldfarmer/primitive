@@ -103,6 +103,10 @@ def start():
         makePhoto()
     else:
         messagebox.showinfo("Error", "No Output/Input File!")
+		
+
+def help():
+	messagebox.showinfo("Help!", "Follow the instructions and press the begin button.")
 
 top_frame = tk.Frame(master)
 bottom_frame = tk.Frame(master)
@@ -181,9 +185,11 @@ imageLabel.pack(pady=5)
 imageURL.pack(pady=5)
 imageButton.pack(pady=5)
 
+help_button = tk.Button(bottom_frame, text = "Help!", command = help)
+
 
 begin_button.pack(pady=20, fill=tk.X)
-
+help_button.pack(pady=5)
 master.mainloop()
 
 #def window():
