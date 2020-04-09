@@ -116,8 +116,11 @@ def makePhoto():
     try:
         alphaInput = alphaEntry.get()
         angleInput = angleEntry.get().replace('\u00B0','')
-        os.system("primitive -f %s -a %s -i %s -o %s -n 100 -rot %s" %(filter,alphaInput,inputPath,outputPath,angleInput))
-        displayImage()
+
+
+        brightnessInput = str(brightnessSlider.get())
+        os.system("primitive -f %s -a %s -i %s -o %s -n 100 -rot %s -b %s" %(filter,alphaInput,inputPath,outputPath,angleInput))
+
         return
             
     except OSError as e:
@@ -128,6 +131,10 @@ def start():
         makePhoto()
     else:
         messagebox.showinfo("Error", "No Output/Input File!")
+		
+
+def help():
+	messagebox.showinfo("Help!", "To begin first press the browse button under the picture path. Choose a photo that is of .jpg/png/gif type. Next find a output path. Ex. C:/Users/Desktop/output.jpg. In the primitive program, there are several different options to chose from. You can choose how transparent you want the picture to appear by changing the value in Alpha. You can rotate the image by changing the degrees in the rotation slot. You can apply a filter by selecting from the drop down menu. Once you are satisfied with the options presented, press the begin button and see your results.")
 
 top_frame = tk.Frame(master)
 bottom_frame = tk.Frame(master)
@@ -169,8 +176,14 @@ FILTERS = [
 ]
 selectedFilter = StringVar(master)
 selectedFilter.set(FILTERS[0])
-filterOptions = OptionMenu(master,selectedFilter, "None", "Gray Scale", "Sepia", "Negative")
+filterOptions = OptionMenu(top_frame,selectedFilter, "None", "Gray Scale", "Sepia", "Negative")
 selectedFilter.trace("w", getFilterOption)
+
+brightnessLabel = tk.Label(top_frame, text="Brightness:")
+brightnessSlider = Scale(top_frame, from_=-100, to=100, orient=HORIZONTAL)
+
+
+
 
 #URL Label, Path, and Button
 imageLabel = tk.Label(bottom_frame, text="URL To Image")
@@ -201,15 +214,23 @@ angleEntry.pack(pady=5)
 filterLabel.pack(pady=5)
 filterOptions.pack(pady=5)
 
+brightnessLabel.pack(pady=5)
+brightnessSlider.pack(pady=5)
+
 #URL Labels and Buttons
 imageLabel.pack(pady=5)
 imageURL.pack(pady=5)
 imageButton.pack(pady=5)
 
+help_button = tk.Button(bottom_frame, text = "Help!", command = help)
+
 
 
 begin_button.pack(pady=20, fill=tk.X)
 
+
+begin_button.pack(pady=20, fill=tk.X)
+help_button.pack(pady=5)
 master.mainloop()
 
 #def window():
