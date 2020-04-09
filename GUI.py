@@ -86,15 +86,40 @@ def getFilterOption(*args):
     print(filter)
     return
     
+    
+def getModeOption(*args):
+    global mode
+    mode = selectedFilter.get()
+    if mode == 'Combo':
+        mode = '0'
+    elif mode == 'Triangle':
+        mode = '1'
+    elif mode == 'Rectangle':
+        mode = '2'
+    elif mode == 'Ellipse':
+        mode = '3'
+    elif mode == 'Circle':
+        mode = '4'
+    elif mode == 'Rotated Rectangle':
+        mode = '5'
+    elif mode == 'Beziers':
+        mode = '6'
+    elif mode == 'Rotated Ellipse':
+        mode = '7'
+    elif mode == 'Polygon':
+        mode = '8'
+    return
 
 def makePhoto():
     global filter
+    global mode
     try:
         alphaInput = alphaEntry.get()
         angleInput = angleEntry.get().replace('\u00B0','')
 
         brightnessInput = str(brightnessSlider.get())
-        os.system("primitive -f %s -a %s -i %s -o %s -n 100 -rot %s -b %s" %(filter,alphaInput,inputPath,outputPath,angleInput))
+
+        os.system("primitive -f %s -a %s -i %s -o %s -n 100 -rot %s -b %s -m %s" %(filter,alphaInput,inputPath,outputPath,angleInput,brightnessInput, mode))
 
         return
             
@@ -129,6 +154,25 @@ browse1 = tk.Button(top_frame, text="Browse", command=input)
 output_path = tk.Label(bottom_frame, text="Output Path:")
 output_entry = tk.Entry(bottom_frame, text="", width=40)
 browse2 = tk.Button(bottom_frame, text="Browse", command=output)
+
+
+# mode option
+modeLabel = tk.Label(top_frame, text="Mode")
+MODES = [
+"Combo",
+"Triangle",
+"Rectangle",
+"Ellipse",
+"Circle",
+"Rotated Rectangle",
+"Beziers",
+"Rotated Ellipse",
+"Polygon"
+]
+selectedMode = StringVar(master)
+selectedMode.set(MODES[1])
+modeOptions = OptionMenu(top_frame,selectedMode, "Combo", "Triangle", "Rectangle", "Ellipse", "Circle", "Rotated Rectangle", "Beziers", "Rotated Ellipse", "Polygon")
+selectedMode.trace("w", getModeOption)
 
 # alpha label and input 
 alphaLabel = tk.Label(top_frame, text="Alpha:")
@@ -179,6 +223,9 @@ browse1.pack(pady=5)
 output_path.pack(pady=5)
 output_entry.pack(pady=5)
 browse2.pack(pady=5)
+
+modeLabel.pack(pady=5)
+modeOptions.pack(pady=5)
 
 alphaLabel.pack(pady=5)
 alphaEntry.pack(pady=5)
