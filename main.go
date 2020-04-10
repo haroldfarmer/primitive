@@ -86,7 +86,7 @@ func init() {
 	flag.IntVar(&Filter, "f", 0, "0=no filter 1=gray scale 2=sepia 3=negative")
 	flag.Float64Var(&Brightness, "b", 0, "percentage change of brightness [-100,100], 0 giving the original image")
 	flag.Float64Var(&Blur, "blur", 0, "produces a blurred version of the image, must be a positive value")
-	flag.IntVar(&SAT, "sat", 0, "Color Intensity")
+	flag.Float64Var(&SAT, "sat", 0, "Color Intensity")
 	flag.Float64Var(&Rotation, "rot", 0, "degree of rotation for the output image")
 	flag.BoolVar(&V, "v", false, "verbose")
 	flag.BoolVar(&VV, "vv", false, "very verbose")
