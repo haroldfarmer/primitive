@@ -22,13 +22,7 @@ def input():
     input_entry.delete(1, tk.END)  # Remove current text in entry
     input_entry.insert(0, input_path)  # Insert the 'path'
     # Checks to see if input file is correct file type
-    if search("png", input_path):
-        inputPath = input_path
-    elif search("jpg", input_path):
-        inputPath = input_path
-    elif search("svg", input_path):
-        inputPath = input_path
-    elif search("gif", input_path):
+    if util.checkOutPath(input_path) == True:
         inputPath = input_path
     else:
         messagebox.showinfo("Error", "Wrong File Type")
@@ -41,22 +35,15 @@ def output():
     output_entry.delete(1, tk.END)  # Remove current text in entry
     output_entry.insert(0, path)  # Insert the 'path'
     # Checks to see if output path contans file extension
-    if search("png", path):
-        outputPath = path
-    elif search("jpg", path):
-        outputPath = path
-    elif search("svg", path):
-        outputPath = path
-    elif search("gif", path):
+    if util.checkOutPath(path) == True:
         outputPath = path
     else:
         messagebox.showinfo("Error", "No Output Name/File Extension")
 
 def displayImage():
         #creates a new window to display preview
-        img = Image.open(outputPath)
-        img = img.resize((250,250),Image.ANTIALIAS)
-        img = a.PhotoImage(img)
+        
+        img = util.previewImage(outputPath)
         newwin = tk.Toplevel(master)
         newwin.title("Preview")
         newwin.title('New Window')
@@ -119,7 +106,7 @@ def makePhoto():
 
 
         brightnessInput = str(brightnessSlider.get())
-        os.system("primitive -f %s -a %s -i %s -o %s -n 100 -rot %s -b %s" %(filter,alphaInput,inputPath,outputPath,angleInput))
+        os.system("primitive -f %s -a %s -i %s -o %s -n 100 %s -b %s" %(filter,alphaInput,inputPath,outputPath,angleInput))
 
         return
             
@@ -129,6 +116,11 @@ def makePhoto():
 def start():
     if inputPath != '' and outputPath != '':
         makePhoto()
+<<<<<<< HEAD
+        displayImage()
+=======
+	displayImage()
+>>>>>>> 6853552508b00e96d504568761d08d9a813fd929
     else:
         messagebox.showinfo("Error", "No Output/Input File!")
 		
@@ -263,4 +255,3 @@ master.mainloop()
     #allows the user to select the photo they want
     #import easygui
     #file = easygui.fileopenbox()
-
