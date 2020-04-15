@@ -1,9 +1,11 @@
 import tkinter.filedialog as filedialog
+import tkinter.font as font
 import tkinter as tk
 import os
 import utils as util
 from tkinter import messagebox
 from tkinter import *
+from tkinter.ttk import *
 from re import search
 
 inputPath = ''# Global variable to store inputPath
@@ -30,7 +32,7 @@ def input():
     else:
         messagebox.showinfo("Error", "Wrong File Type")
     
-	
+    
 def output():
     path = tk.filedialog.askdirectory()
     global outputPath
@@ -86,111 +88,189 @@ def getFilterOption(*args):
     print(filter)
     return
     
+    
+def getModeOption(*args):
+    global mode
+    mode = selectedFilter.get()
+    if mode == 'Combo':
+        mode = '0'
+    elif mode == 'Triangle':
+        mode = '1'
+    elif mode == 'Rectangle':
+        mode = '2'
+    elif mode == 'Ellipse':
+        mode = '3'
+    elif mode == 'Circle':
+        mode = '4'
+    elif mode == 'Rotated Rectangle':
+        mode = '5'
+    elif mode == 'Beziers':
+        mode = '6'
+    elif mode == 'Rotated Ellipse':
+        mode = '7'
+    elif mode == 'Polygon':
+        mode = '8'
+    return
 
 def makePhoto():
-    # Todo Figure out a way to take in user input from buttons/input boxes and
-    # Not have to have if statements for every possibility but for now because 
-    # Of time constraints and limited knowledge on tkinter if statements will 
-    # be sufficent
     global filter
+    global mode
     try:
-        alphaInput = alphaNum.get()
-        if alphaInput == '' and filter == '0':
-            os.system("primitive -i %s -o %s -n 100" %(inputPath,outputPath))
-            print("false")
-            return
-        elif alphaInput == '' and filter != '0':
-            print("This is filter", filter)
-            os.system("primitive -f %s -i %s -o %s -n 100" %(filter,inputPath,outputPath))
-        else:
-            os.system("primitive -f %s -a %s -i %s -o %s -n 100 -f 2" %(filter,alphaInput,inputPath,outputPath))
-            return
+        alphaInput = alphaEntry.get()
+        angleInput = angleEntry.get().replace('\u00B0','')
+        brightnessInput = str(brightnessSlider.get())
+        os.system("primitive -f %s -a %s -i %s -o %s -n 100 -rot %s -b %s -m %s" %(filter,alphaInput,inputPath,outputPath,angleInput,brightnessInput, mode))
+        return
             
     except OSError as e:
         raise e
-	
+    
 def start():
     if inputPath != '' and outputPath != '':
         makePhoto()
     else:
         messagebox.showinfo("Error", "No Output/Input File!")
 
-top_frame = tk.Frame(master)
-bottom_frame = tk.Frame(master)
-line = tk.Frame(master, height=1, width=400, bg="grey80", relief='groove')
-
-	
-top_frame.pack(side=tk.TOP)
-line.pack(pady=10)
-bottom_frame.pack(side=tk.BOTTOM)	
-	
-	
-
-input_path = tk.Label(top_frame, text="Picture path:")
-input_entry = tk.Entry(top_frame, text="", width=40)
-browse1 = tk.Button(top_frame, text="Browse", command=input)
-
-output_path = tk.Label(bottom_frame, text="Output Path:")
-output_entry = tk.Entry(bottom_frame, text="", width=40)
-browse2 = tk.Button(bottom_frame, text="Browse", command=output)
-
-# alpha label and input 
-alphaLabel = tk.Label(top_frame, text="Alpha:")
-alphaNum = tk.Entry(top_frame,width=40)
+    
+    
 
 
+# mode options
+MODES = [
+"Combo",
+"Triangle",
+"Rectangle",
+"Ellipse",
+"Circle",
+"Rotated Rectangle",
+"Beziers",
+"Rotated Ellipse",
+"Polygon"
+]
 
-#filter option dropdown
-filterLabel = tk.Label(top_frame, text="Filter:")
+#filter options
 FILTERS = [
 "None",
 "Gray Scale",
 "Sepia",
 "Negative"
 ]
+
+############################## frame setup ###############################
+input_frame = tk.Frame(master)
+input_frame.pack(side=tk.TOP)
+
+primitive_frame = tk.Frame(master)
+primitive_frame.pack(side=tk.TOP)
+
+output_frame = tk.Frame(master)
+output_frame.pack(side=tk.TOP)
+
+
+################################### font ##################################
+headerFont = font.Font(size=30)
+
+
+############################ input image frame #############################
+inputImageLabel = tk.Label(input_frame, text="Input Image")
+inputImageLabel['font'] = headerFont
+
+inputPathLabel = tk.Label(input_frame, text="Picture Path:")
+input_entry = tk.Entry(input_frame, width=40)
+browse1 = tk.Button(input_frame, text="Browse", command=input)
+
+inputUrlLabel = tk.Label(input_frame, text="Picture URL:")
+imageURL = tk.Entry(input_frame, width=40)
+imageButton = tk.Button(input_frame, text="Download Image", command=getUrlImage)
+ 
+#insert into grid
+inputImageLabel.grid(row=0, column=0)
+inputPathLabel.grid(row=1, column=0)
+input_entry.grid(row=1, column=1)
+browse1.grid(row=1, column=2)
+inputUrlLabel.grid(row=2, column=0)
+imageURL.grid(row=2, column=1)
+imageButton.grid(row=2, column=2)
+
+
+######################## primitive arguments frame ########################
+modeLabel = tk.Label(primitive_frame, text="Mode:")
+selectedMode = StringVar(master)
+selectedMode.set(MODES[1])
+modeOptions = OptionMenu(primitive_frame,selectedMode, "Combo", "Triangle", "Rectangle", "Ellipse", "Circle", "Rotated Rectangle", "Beziers", "Rotated Ellipse", "Polygon")
+selectedMode.trace("w", getModeOption)
+
+ #TODO: implement number of shapes
+numberOfShapesLabel = tk.Label(primitive_frame, text="Number of Shapes:")
+numberOfShapesEntry = tk.Entry(primitive_frame, width=10)
+numberOfShapesEntry.insert(0, "100")
+ 
+alphaLabel = tk.Label(primitive_frame, text="Alpha:")
+alphaEntry = tk.Entry(primitive_frame, width=10)
+alphaEntry.insert(0, "128")
+ 
+ #TODO: implement number of workers
+workerLabel = tk.Label(primitive_frame, text="Number of Workers:")
+workerEntry = tk.Entry(primitive_frame, width=10)
+workerEntry.insert(0, "0")
+
+filterLabel = tk.Label(primitive_frame, text="Filter:")
 selectedFilter = StringVar(master)
 selectedFilter.set(FILTERS[0])
-filterOptions = OptionMenu(master,selectedFilter, "None", "Gray Scale", "Sepia", "Negative")
+filterOptions = OptionMenu(primitive_frame,selectedFilter, "None", "Gray Scale", "Sepia", "Negative")
 selectedFilter.trace("w", getFilterOption)
+ 
+brightnessLabel = tk.Label(primitive_frame, text="Brightness:")
+brightnessSlider = Scale(primitive_frame, from_=-100, to=100, orient=HORIZONTAL)
+ 
+angleLabel = tk.Label(primitive_frame, text="Rotate:")
+angleEntry = tk.Entry(primitive_frame,width=10)
+angleEntry.insert(0, "0\u00B0")
 
-#URL Label, Path, and Button
-imageLabel = tk.Label(bottom_frame, text="URL To Image")
-imageURL = tk.Entry(bottom_frame, text="",width=40)
-imageButton = tk.Button(bottom_frame, text="Download Image:", command=getUrlImage)
-
-
-begin_button = tk.Button(bottom_frame, text='Begin!',command=start) #beginButton	
-
-top_frame.pack(side=tk.TOP)
-line.pack(pady=10)
-bottom_frame.pack(side=tk.BOTTOM)
-	
-input_path.pack(pady=5)
-input_entry.pack(pady=5)
-browse1.pack(pady=5)
-
-output_path.pack(pady=5)
-output_entry.pack(pady=5)
-browse2.pack(pady=5)
-
-alphaLabel.pack(pady=5)
-alphaNum.pack(pady=5)
-
-filterLabel.pack(pady=5)
-filterOptions.pack(pady=5)
-
-#URL Labels and Buttons
-imageLabel.pack(pady=5)
-imageURL.pack(pady=5)
-imageButton.pack(pady=5)
+#insert into grid
+modeLabel.grid(row=0, column=0)
+modeOptions.grid(row=0, column=1)
+numberOfShapesLabel.grid(row=1, column=0)
+numberOfShapesEntry.grid(row=1, column=1)
+alphaLabel.grid(row=2, column=0)
+alphaEntry.grid(row=2, column=1)
+workerLabel.grid(row=3, column=0)
+workerEntry.grid(row=3, column=1)
+filterLabel.grid(row=0, column=3)
+filterOptions.grid(row=0,column=4)
+brightnessLabel.grid(row=1, column=3)
+brightnessSlider.grid(row=1, column=4)
+angleLabel.grid(row=2, column=3)
+angleEntry.grid(row=2, column=4)
 
 
-begin_button.pack(pady=20, fill=tk.X)
+############################ output image frame #############################
+outputImageLabel = tk.Label(output_frame, text="Output Image")
+outputImageLabel['font'] = headerFont
+
+#TODO: implement file name
+filenameLabel = tk.Label(output_frame, text="Filename:")
+filenameEntry = tk.Entry(output_frame, width=40)
+outputPathLabel = tk.Label(output_frame, text="Path:")
+output_entry = tk.Entry(output_frame, width=40)
+browse2 = tk.Button(output_frame, text="Browse", command=output)
+#TODO: implement extension
+extensionLabel = tk.Label(output_frame, text="Extension:")
+
+begin_button = tk.Button(output_frame, text='Begin!',command=start)
+begin_button['font'] = headerFont
+
+#insert into grid
+outputImageLabel.grid(row=0, column=0)
+filenameLabel.grid(row=1, column=0)
+filenameEntry.grid(row=1, column=1)
+outputPathLabel.grid(row=2, column=0)
+output_entry.grid(row=2, column=1)
+browse2.grid(row=2, column=2)
+extensionLabel.grid(row=3, column=0)
+begin_button.grid(row=4, columnspan=3)
 
 master.mainloop()
-
-#def window():
-#       Creates window for the program
 
 #TODO Req 1.0
 #def helpButton()
@@ -199,7 +279,7 @@ master.mainloop()
 #TODO 1.1
 #def export()
 #   allow the user to export their finished
-#   picture to the location of their choice 
+#   picture to the location of their choice
 #TODO 1.2
 #def difficulty()
 #   allows the user to select the number of geometric shapes to form
