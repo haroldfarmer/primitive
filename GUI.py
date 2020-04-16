@@ -43,7 +43,19 @@ def output():
         inputPath = input_path
     else:
         messagebox.showinfo("Error", "No Output Name/File Extension")
+
+def displayImage():
+        #creates a new window to display preview
+        
+        img = util.previewImage(outputPath)
+        newwin = tk.Toplevel(master)
+        newwin.title("Preview")
+        newwin.title('New Window')
+        newwin.geometry("500x500") 
+        newwin.resizable(0, 0)
     
+        display = Label(newwin, text="Preview")
+        
 def displayImage():
     #creates a new window to display preview
     img = util.previewImage(outputPath)
@@ -60,8 +72,6 @@ def displayImage():
     l.image = img
     display.pack()
     l.pack(pady=5)
-    
-    
     
 def getUrlImage():
     global inputPath
@@ -82,7 +92,9 @@ def getUrlImage():
         print("Here")
         util.getImage(url, outputPath)
         inputPath = outputPath
-        
+
+
+
 def getFilterOption(*args):
     global filter
     filter = selectedFilter.get()
@@ -140,6 +152,10 @@ def start():
         displayImage()
     else:
         messagebox.showinfo("Error", "No Output/Input File!")
+		
+
+def help():
+	messagebox.showinfo("Help!", "To begin first press the browse button under the picture path. Choose a photo that is of .jpg/png/gif type. Next find a output path. Ex. C:/Users/Desktop/output.jpg. In the primitive program, there are several different options to chose from. You can choose how transparent you want the picture to appear by changing the value in Alpha. You can rotate the image by changing the degrees in the rotation slot. You can apply a filter by selecting from the drop down menu. Once you are satisfied with the options presented, press the begin button and see your results.")
 
 # mode options
 MODES = [
@@ -165,7 +181,6 @@ FILTERS = [
 ############################## frame setup ###############################
 input_frame = tk.Frame(master)
 input_frame.pack(side=tk.TOP)
-
 primitive_frame = tk.Frame(master)
 primitive_frame.pack(side=tk.TOP)
 
@@ -180,6 +195,7 @@ headerFont = font.Font(size=30)
 ############################# help button #################################
 help_button = tk.Button(input_frame, text = "Help!", command = help)
 help_button.grid(row=0, column= 1 )
+
 
 ############################ input image frame #############################
 inputImageLabel = tk.Label(input_frame, text="Input Image")
@@ -305,4 +321,3 @@ master.mainloop()
     #allows the user to select the photo they want
     #import easygui
     #file = easygui.fileopenbox()
-

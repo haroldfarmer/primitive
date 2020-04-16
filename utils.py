@@ -11,7 +11,6 @@ def getImage(url, filePath):
     print("This is file path" + filePath)
     urllib.request.urlretrieve(url, filePath)
 
-
 def previewImage(path):
     img = Image.open(path)
     img = img.resize((250,250),Image.ANTIALIAS)
