@@ -7,12 +7,18 @@ from tkinter import messagebox
 from tkinter import *
 from tkinter.ttk import *
 from re import search
+import PIL
+from PIL import ImageTk as a
+from PIL import Image
 
 inputPath = ''# Global variable to store inputPath
 outputPath = ''# Global variable to store outputPath
 filter = '0'
 master = tk.Tk()
 master.title("Primitive")
+
+def help():
+    messagebox.showinfo("Help!", "To begin first press the browse button under the picture path. Choose a photo that is of .jpg/png/gif type. Next find a output path. Ex. C:/Users/Desktop/output.jpg. In the primitive program, there are several different options to chose from. You can choose how transparent you want the picture to appear by changing the value in Alpha. You can rotate the image by changing the degrees in the rotation slot. You can apply a filter by selecting from the drop down menu. Once you are satisfied with the options presented, press the begin button and see your results.")
 
 def input():
     input_path = tk.filedialog.askopenfilename()
@@ -21,17 +27,10 @@ def input():
     input_entry.delete(1, tk.END)  # Remove current text in entry
     input_entry.insert(0, input_path)  # Insert the 'path'
     # Checks to see if input file is correct file type
-    if search("png", input_path):
-        inputPath = input_path
-    elif search("jpg", input_path):
-        inputPath = input_path
-    elif search("svg", input_path):
-        inputPath = input_path
-    elif search("gif", input_path):
+    if util.checkOutPath(input_path) == True:
         inputPath = input_path
     else:
         messagebox.showinfo("Error", "Wrong File Type")
-    
     
 def output():
     path = tk.filedialog.askdirectory()
@@ -40,26 +39,36 @@ def output():
     output_entry.delete(1, tk.END)  # Remove current text in entry
     output_entry.insert(0, path)  # Insert the 'path'
     # Checks to see if output path contans file extension
-    if search("png", path):
-        outputPath = path
-    elif search("jpg", path):
-        outputPath = path
-    elif search("svg", path):
-        outputPath = path
-    elif search("gif", path):
-        outputPath = path
+    if util.checkOutPath(input_path) == True:
+        inputPath = input_path
     else:
         messagebox.showinfo("Error", "No Output Name/File Extension")
+    
+def displayImage():
+    #creates a new window to display preview
+    img = util.previewImage(outputPath)
+    newwin = tk.Toplevel(master)
+    newwin.title("Preview")
+    newwin.title('New Window')
+    newwin.geometry("500x500")
+    newwin.resizable(0, 0)
+
+    display = Label(newwin, text="Preview")
+
+
+    l=tk.Label(newwin,image=img)
+    l.image = img
+    display.pack()
+    l.pack(pady=5)
+    
+    
     
 def getUrlImage():
     global inputPath
     global outputPath
     url = imageURL.get()
     ext = util.getExtension(url)#gets the extendsion of the URL
-    outExt = util.getExtension(outputPath)# gets the extension of the output path cause that where the new image file will be named
-    
-    #makes sure that the file trying to be downloaded is the same extension of user input
-    #also makes sure that there are extensions and URL
+    outExt = util.getExtension(outputPath)# gets the extension of the output
     if imageURL == '':
         messagebox.showinfo("Error", "No URL to Image !")
         return
@@ -128,12 +137,9 @@ def makePhoto():
 def start():
     if inputPath != '' and outputPath != '':
         makePhoto()
+        displayImage()
     else:
         messagebox.showinfo("Error", "No Output/Input File!")
-
-    
-    
-
 
 # mode options
 MODES = [
@@ -170,6 +176,10 @@ output_frame.pack(side=tk.TOP)
 ################################### font ##################################
 headerFont = font.Font(size=30)
 
+
+############################# help button #################################
+help_button = tk.Button(input_frame, text = "Help!", command = help)
+help_button.grid(row=0, column= 1 )
 
 ############################ input image frame #############################
 inputImageLabel = tk.Label(input_frame, text="Input Image")
@@ -271,10 +281,6 @@ extensionLabel.grid(row=3, column=0)
 begin_button.grid(row=4, columnspan=3)
 
 master.mainloop()
-
-#TODO Req 1.0
-#def helpButton()
-#   Creates a help button
 
 #TODO 1.1
 #def export()
