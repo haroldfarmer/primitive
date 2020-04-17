@@ -13,6 +13,7 @@ from PIL import Image
 
 inputPath = ''# Global variable to store inputPath
 outputPath = ''# Global variable to store outputPath
+mode = '0'
 filter = '0'
 master = tk.Tk()
 master.title("Primitive")
@@ -38,25 +39,16 @@ def output():
     
     output_entry.delete(1, tk.END)  # Remove current text in entry
     output_entry.insert(0, path)  # Insert the 'path'
-    # Checks to see if output path contans file extension
-    if util.checkOutPath(input_path) == True:
-        inputPath = input_path
-    else:
-        messagebox.showinfo("Error", "No Output Name/File Extension")
-
-def displayImage():
-        #creates a new window to display preview
+    # Checks to see if output path contans file extension    
+    outputPath = path
         
-        img = util.previewImage(outputPath)
-        newwin = tk.Toplevel(master)
-        newwin.title("Preview")
-        newwin.title('New Window')
-        newwin.geometry("500x500") 
-        newwin.resizable(0, 0)
     
-        display = Label(newwin, text="Preview")
+
+
         
 def displayImage():
+    global outputPath
+    print("THIS Is IDSPLAY " + outputPath)
     #creates a new window to display preview
     img = util.previewImage(outputPath)
     newwin = tk.Toplevel(master)
@@ -112,7 +104,7 @@ def getFilterOption(*args):
     
 def getModeOption(*args):
     global mode
-    mode = selectedFilter.get()
+    mode = selectedMode.get()
     if mode == 'Combo':
         mode = '0'
     elif mode == 'Triangle':
@@ -133,14 +125,24 @@ def getModeOption(*args):
         mode = '8'
     return
 
+
+
 def makePhoto():
+    # TODO:
+    # Get Filter, Brightness, and Rotation 
     global filter
     global mode
+    global outputPath
     try:
         alphaInput = alphaEntry.get()
         angleInput = angleEntry.get().replace('\u00B0','')
         brightnessInput = str(brightnessSlider.get())
-        os.system("primitive -f %s -a %s -i %s -o %s -n 100 -rot %s -b %s -m %s" %(filter,alphaInput,inputPath,outputPath,angleInput,brightnessInput, mode))
+        numShapesInput = numberOfShapesEntry.get()
+        numWorkers = workerEntry.get()
+        outputPath = outputPath + "/" + filenameEntry.get() + selectedExtension.get()
+        print("This is outputPath " + outputPath)
+        print("This is inputPath " + inputPath)
+        os.system("primitive -f %s -a %s -i %s -o %s -n %s -j %s -m %s" %(filter,alphaInput,inputPath,outputPath, numShapesInput, numWorkers, mode))
         return
             
     except OSError as e:
@@ -148,10 +150,8 @@ def makePhoto():
     
 def start():
     if inputPath != '' and outputPath != '':
-
         makePhoto()
         displayImage()
-
     else:
         messagebox.showinfo("Error", "No Output/Input File!")
 		
@@ -178,6 +178,14 @@ FILTERS = [
 "Gray Scale",
 "Sepia",
 "Negative"
+]
+
+#file extension options
+EXTENSIONS = [
+".png",
+".jpg",
+".svg",
+".gif"
 ]
 
 ############################## frame setup ###############################
@@ -249,7 +257,11 @@ filterOptions = OptionMenu(primitive_frame,selectedFilter, "None", "Gray Scale",
 selectedFilter.trace("w", getFilterOption)
  
 brightnessLabel = tk.Label(primitive_frame, text="Brightness:")
-brightnessSlider = Scale(primitive_frame, from_=-100, to=100, orient=HORIZONTAL)
+brightnessSlider = tk.Scale(primitive_frame, from_=-100, to=100, orient=HORIZONTAL)
+
+#TODO: implement saturation slider
+
+#TODO: implement blur function
  
 angleLabel = tk.Label(primitive_frame, text="Rotate:")
 angleEntry = tk.Entry(primitive_frame,width=10)
@@ -283,8 +295,13 @@ filenameEntry = tk.Entry(output_frame, width=40)
 outputPathLabel = tk.Label(output_frame, text="Path:")
 output_entry = tk.Entry(output_frame, width=40)
 browse2 = tk.Button(output_frame, text="Browse", command=output)
-#TODO: implement extension
+
 extensionLabel = tk.Label(output_frame, text="Extension:")
+selectedExtension = StringVar(master)
+selectedExtension.set(FILTERS[0])
+extensionOptions = OptionMenu(output_frame,selectedExtension, ".png", ".jpg", ".svg", ".gif")
+selectedFilter.trace("w", getFilterOption)
+
 
 begin_button = tk.Button(output_frame, text='Begin!',command=start)
 begin_button['font'] = headerFont
@@ -298,6 +315,7 @@ outputPathLabel.grid(row=2, column=0)
 output_entry.grid(row=2, column=1)
 browse2.grid(row=2, column=2)
 extensionLabel.grid(row=3, column=0)
+extensionOptions.grid(row=3, column=1)
 begin_button.grid(row=4, columnspan=3)
 
 master.mainloop()
