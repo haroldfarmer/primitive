@@ -236,7 +236,6 @@ selectedMode.set(MODES[1])
 modeOptions = OptionMenu(primitive_frame,selectedMode, "Combo", "Triangle", "Rectangle", "Ellipse", "Circle", "Rotated Rectangle", "Beziers", "Rotated Ellipse", "Polygon")
 selectedMode.trace("w", getModeOption)
 
- #TODO: implement number of shapes
 numberOfShapesLabel = tk.Label(primitive_frame, text="Number of Shapes:")
 numberOfShapesEntry = tk.Entry(primitive_frame, width=10)
 numberOfShapesEntry.insert(0, "100")
@@ -244,8 +243,7 @@ numberOfShapesEntry.insert(0, "100")
 alphaLabel = tk.Label(primitive_frame, text="Alpha:")
 alphaEntry = tk.Entry(primitive_frame, width=10)
 alphaEntry.insert(0, "128")
- 
- #TODO: implement number of workers
+
 workerLabel = tk.Label(primitive_frame, text="Number of Workers:")
 workerEntry = tk.Entry(primitive_frame, width=10)
 workerEntry.insert(0, "0")
