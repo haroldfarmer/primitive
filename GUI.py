@@ -247,7 +247,11 @@ filterOptions = OptionMenu(primitive_frame,selectedFilter, "None", "Gray Scale",
 selectedFilter.trace("w", getFilterOption)
  
 brightnessLabel = tk.Label(primitive_frame, text="Brightness:")
-brightnessSlider = Scale(primitive_frame, from_=-100, to=100, orient=HORIZONTAL)
+brightnessSlider = tk.Scale(primitive_frame, from_=-100, to=100, orient=HORIZONTAL)
+
+#TODO: implement saturation slider
+
+#TODO: implement blur function
  
 angleLabel = tk.Label(primitive_frame, text="Rotate:")
 angleEntry = tk.Entry(primitive_frame,width=10)
