@@ -194,7 +194,7 @@ headerFont = font.Font(size=30)
 
 ############################# help button #################################
 help_button = tk.Button(input_frame, text = "Help!", command = help)
-help_button.grid(row=0, column= 1 )
+help_button.grid(row=0, column= 2 )
 
 
 ############################ input image frame #############################
@@ -210,7 +210,7 @@ imageURL = tk.Entry(input_frame, width=40)
 imageButton = tk.Button(input_frame, text="Download Image", command=getUrlImage)
  
 #insert into grid
-inputImageLabel.grid(row=0, column=0)
+inputImageLabel.grid(row=0, column=1)
 inputPathLabel.grid(row=1, column=0)
 input_entry.grid(row=1, column=1)
 browse1.grid(row=1, column=2)
@@ -277,6 +277,7 @@ outputImageLabel['font'] = headerFont
 #TODO: implement file name
 filenameLabel = tk.Label(output_frame, text="Filename:")
 filenameEntry = tk.Entry(output_frame, width=40)
+
 outputPathLabel = tk.Label(output_frame, text="Path:")
 output_entry = tk.Entry(output_frame, width=40)
 browse2 = tk.Button(output_frame, text="Browse", command=output)
@@ -287,10 +288,11 @@ begin_button = tk.Button(output_frame, text='Begin!',command=start)
 begin_button['font'] = headerFont
 
 #insert into grid
-outputImageLabel.grid(row=0, column=0)
+outputImageLabel.grid(row=0, column=1)
 filenameLabel.grid(row=1, column=0)
 filenameEntry.grid(row=1, column=1)
-outputPathLabel.grid(row=2, column=0)
+
+outputPathLabel.grid(row=2, column=7)
 output_entry.grid(row=2, column=1)
 browse2.grid(row=2, column=2)
 extensionLabel.grid(row=3, column=0)
