@@ -292,7 +292,7 @@ outputImageLabel.grid(row=0, column=1)
 filenameLabel.grid(row=1, column=0)
 filenameEntry.grid(row=1, column=1)
 
-outputPathLabel.grid(row=2, column=7)
+outputPathLabel.grid(row=2, column=0)
 output_entry.grid(row=2, column=1)
 browse2.grid(row=2, column=2)
 extensionLabel.grid(row=3, column=0)
