@@ -206,7 +206,7 @@ func main() {
 					adjustedImage := imaging.AdjustBrightness(model.Context.Image(), Brightness)
 					adjustedImage = imaging.Blur(adjustedImage, Blur)
 					adjustedImage = imaging.Rotate(adjustedImage, Rotation, color.Black)
-					adjustedImage = imaging.AdjustSaturation(model.Context.Image(), SAT)
+					adjustedImage = imaging.AdjustSaturation(adjustedImage, SAT)
 					switch ext {
 					default:
 						check(fmt.Errorf("unrecognized file extension: %s", ext))
