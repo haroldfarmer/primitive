@@ -41,4 +41,3 @@ def getExtension(url):
         return '.gif'
     else:
         return ''
-    
