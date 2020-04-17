@@ -28,7 +28,7 @@ def checkOutPath(path):
         return True
     else:
         return False
-    
+
 def getExtension(url):
     if search(".png", url):
         return '.png'
@@ -40,4 +40,3 @@ def getExtension(url):
         return '.gif'
     else:
         return ''
-    
