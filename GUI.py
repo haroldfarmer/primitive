@@ -148,8 +148,10 @@ def makePhoto():
     
 def start():
     if inputPath != '' and outputPath != '':
+
         makePhoto()
         displayImage()
+
     else:
         messagebox.showinfo("Error", "No Output/Input File!")
 		
