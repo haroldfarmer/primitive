@@ -189,7 +189,7 @@ output_frame.pack(side=tk.TOP)
 
 
 ################################### font ##################################
-headerFont = font.Font(size=30)
+headerFont = font.Font(size=20)
 
 
 ############################# help button #################################
@@ -211,12 +211,12 @@ imageButton = tk.Button(input_frame, text="Download Image", command=getUrlImage)
  
 #insert into grid
 inputImageLabel.grid(row=0, column=1)
-inputPathLabel.grid(row=1, column=0)
+inputPathLabel.grid(row=1, column=0, padx = 10, pady = 20)
 input_entry.grid(row=1, column=1)
 browse1.grid(row=1, column=2)
 inputUrlLabel.grid(row=2, column=0)
 imageURL.grid(row=2, column=1)
-imageButton.grid(row=2, column=2)
+imageButton.grid(row=2, column=2, padx = 10, pady = 20)
 
 
 ######################## primitive arguments frame ########################
@@ -260,8 +260,8 @@ numberOfShapesLabel.grid(row=1, column=0)
 numberOfShapesEntry.grid(row=1, column=1)
 alphaLabel.grid(row=2, column=0)
 alphaEntry.grid(row=2, column=1)
-workerLabel.grid(row=3, column=0)
-workerEntry.grid(row=3, column=1)
+workerLabel.grid(row=3, column=1)
+workerEntry.grid(row=3, column=2, padx = 10, pady = 20)
 filterLabel.grid(row=0, column=3)
 filterOptions.grid(row=0,column=4)
 brightnessLabel.grid(row=1, column=3)
@@ -278,25 +278,25 @@ outputImageLabel['font'] = headerFont
 filenameLabel = tk.Label(output_frame, text="Filename:")
 filenameEntry = tk.Entry(output_frame, width=40)
 
-outputPathLabel = tk.Label(output_frame, text="Path:")
+#outputPathLabel = tk.Label(output_frame, text="Path:")
 output_entry = tk.Entry(output_frame, width=40)
 browse2 = tk.Button(output_frame, text="Browse", command=output)
 #TODO: implement extension
 extensionLabel = tk.Label(output_frame, text="Extension:")
 
-begin_button = tk.Button(output_frame, text='Begin!',command=start)
+begin_button = tk.Button(output_frame, text='Begin!',command=start, fg="red")
 begin_button['font'] = headerFont
 
 #insert into grid
-outputImageLabel.grid(row=0, column=1)
+outputImageLabel.grid(row=0, column=1, padx = 10, pady = 20)
 filenameLabel.grid(row=1, column=0)
 filenameEntry.grid(row=1, column=1)
 
-outputPathLabel.grid(row=2, column=7)
+#outputPathLabel.grid(row=2, column=7)
 output_entry.grid(row=2, column=1)
-browse2.grid(row=2, column=2)
-extensionLabel.grid(row=3, column=0)
-begin_button.grid(row=4, columnspan=3)
+browse2.grid(row=2, column=3, padx = 10)
+extensionLabel.grid(row=2, column=0)
+begin_button.grid(row=4, columnspan=4, padx = 10, pady = 10)
 
 master.mainloop()
 
