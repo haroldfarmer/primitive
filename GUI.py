@@ -13,6 +13,7 @@ from PIL import Image
 
 inputPath = ''# Global variable to store inputPath
 outputPath = ''# Global variable to store outputPath
+mode = '0'
 filter = '0'
 master = tk.Tk()
 master.title("Primitive")
@@ -38,25 +39,12 @@ def output():
     
     output_entry.delete(1, tk.END)  # Remove current text in entry
     output_entry.insert(0, path)  # Insert the 'path'
-    # Checks to see if output path contans file extension
-    if util.checkOutPath(input_path) == True:
-        outputPath = output_path
-    else:
-        messagebox.showinfo("Error", "No Output Name/File Extension")
-
-def displayImage():
-        #creates a new window to display preview
-        
-        img = util.previewImage(outputPath)
-        newwin = tk.Toplevel(master)
-        newwin.title("Preview")
-        newwin.title('New Window')
-        newwin.geometry("500x500") 
-        newwin.resizable(0, 0)
-    
-        display = Label(newwin, text="Preview")
+    # Checks to see if output path contans file extension    
+    outputPath = path
         
 def displayImage():
+    global outputPath
+    print("THIS Is IDSPLAY " + outputPath)
     #creates a new window to display preview
     img = util.previewImage(outputPath)
     newwin = tk.Toplevel(master)
@@ -112,7 +100,7 @@ def getFilterOption(*args):
     
 def getModeOption(*args):
     global mode
-    mode = selectedFilter.get()
+    mode = selectedMode.get()
     if mode == 'Combo':
         mode = '0'
     elif mode == 'Triangle':
@@ -133,14 +121,24 @@ def getModeOption(*args):
         mode = '8'
     return
 
+
+
 def makePhoto():
+    # TODO:
+    # Get Filter, Brightness, and Rotation 
     global filter
     global mode
+    global outputPath
     try:
         alphaInput = alphaEntry.get()
         angleInput = angleEntry.get().replace('\u00B0','')
         brightnessInput = str(brightnessSlider.get())
-        os.system("primitive -f %s -a %s -i %s -o %s -n 100 -rot %s -b %s -m %s" %(filter,alphaInput,inputPath,outputPath,angleInput,brightnessInput, mode))
+        numShapesInput = numberOfShapesEntry.get()
+        numWorkers = workerEntry.get()
+        outputPath = outputPath + "/" + filenameEntry.get() + selectedExtension.get()
+        print("This is outputPath " + outputPath)
+        print("This is inputPath " + inputPath)
+        os.system("primitive -f %s -a %s -i %s -o %s -n %s -j %s -m %s" %(filter,alphaInput,inputPath,outputPath, numShapesInput, numWorkers, mode))
         return
             
     except OSError as e:
@@ -148,10 +146,8 @@ def makePhoto():
     
 def start():
     if inputPath != '' and outputPath != '':
-
         makePhoto()
         displayImage()
-
     else:
         messagebox.showinfo("Error", "No Output/Input File!")
 		
@@ -236,7 +232,6 @@ selectedMode.set(MODES[1])
 modeOptions = OptionMenu(primitive_frame,selectedMode, "Combo", "Triangle", "Rectangle", "Ellipse", "Circle", "Rotated Rectangle", "Beziers", "Rotated Ellipse", "Polygon")
 selectedMode.trace("w", getModeOption)
 
- #TODO: implement number of shapes
 numberOfShapesLabel = tk.Label(primitive_frame, text="Number of Shapes:")
 numberOfShapesEntry = tk.Entry(primitive_frame, width=10)
 numberOfShapesEntry.insert(0, "100")
@@ -244,8 +239,7 @@ numberOfShapesEntry.insert(0, "100")
 alphaLabel = tk.Label(primitive_frame, text="Alpha:")
 alphaEntry = tk.Entry(primitive_frame, width=10)
 alphaEntry.insert(0, "128")
- 
- #TODO: implement number of workers
+
 workerLabel = tk.Label(primitive_frame, text="Number of Workers:")
 workerEntry = tk.Entry(primitive_frame, width=10)
 workerEntry.insert(0, "0")
