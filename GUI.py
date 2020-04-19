@@ -42,10 +42,6 @@ def output():
     # Checks to see if output path contans file extension    
     outputPath = path
         
-    
-
-
-        
 def displayImage():
     global outputPath
     print("THIS Is IDSPLAY " + outputPath)
