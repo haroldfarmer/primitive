@@ -138,7 +138,8 @@ def makePhoto():
         outputPath = outputPath + "/" + filenameEntry.get() + selectedExtension.get()
         print("This is outputPath " + outputPath)
         print("This is inputPath " + inputPath)
-        os.system("primitive -f %s -a %s -i %s -o %s -n %s -j %s -m %s" %(filter,alphaInput,inputPath,outputPath, numShapesInput, numWorkers, mode))
+        os.system("go run main.go -f %s -a %s -i %s -o %s -n %s -j %s -m %s" %(filter,alphaInput,inputPath,outputPath, numShapesInput, numWorkers, mode))
+        
         return
             
     except OSError as e:
