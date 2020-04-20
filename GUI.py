@@ -296,7 +296,7 @@ selectedExtension = StringVar(master)
 selectedExtension.set(FILTERS[0])
 extensionOptions = OptionMenu(output_frame,selectedExtension, ".png", ".jpg", ".svg", ".gif")
 
-begin_button = tk.Button(output_frame, text='Begin!',command=start, fg="red")
+begin_button = tk.Button(output_frame, text='Begin!',command=start)
 begin_button['font'] = headerFont
 
 #insert into grid
