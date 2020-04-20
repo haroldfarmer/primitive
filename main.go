@@ -36,6 +36,7 @@ var (
 	Brightness float64
 	Blur       float64
 	Rotation   float64
+	SAT        float64
 	V, VV      bool
 )
 
@@ -85,6 +86,7 @@ func init() {
 	flag.IntVar(&Filter, "f", 0, "0=no filter 1=gray scale 2=sepia 3=negative")
 	flag.Float64Var(&Brightness, "b", 0, "percentage change of brightness [-100,100], 0 giving the original image")
 	flag.Float64Var(&Blur, "blur", 0, "produces a blurred version of the image, must be a positive value")
+	flag.Float64Var(&SAT, "sat", 0, "Color Intensity")
 	flag.Float64Var(&Rotation, "rot", 0, "degree of rotation for the output image")
 	flag.BoolVar(&V, "v", false, "verbose")
 	flag.BoolVar(&VV, "vv", false, "very verbose")
@@ -179,7 +181,7 @@ func main() {
 
 			// find optimal shape and add it to the model
 			t := time.Now()
-			n := model.Step(primitive.ShapeType(config.Mode), config.Alpha, config.Repeat, config.Filter)
+			n := model.Step(primitive.ShapeType(config.Mode), config.Alpha, config.Repeat)
 			nps := primitive.NumberString(float64(n) / time.Since(t).Seconds())
 			elapsed := time.Since(start).Seconds()
 			primitive.Log(1, "%d: t=%.3f, score=%.6f, n=%d, n/s=%s\n", frame, elapsed, model.Score, n, nps)
@@ -204,7 +206,7 @@ func main() {
 					adjustedImage := imaging.AdjustBrightness(model.Context.Image(), Brightness)
 					adjustedImage = imaging.Blur(adjustedImage, Blur)
 					adjustedImage = imaging.Rotate(adjustedImage, Rotation, color.Black)
-
+					adjustedImage = imaging.AdjustSaturation(adjustedImage, SAT)
 					switch ext {
 					default:
 						check(fmt.Errorf("unrecognized file extension: %s", ext))
