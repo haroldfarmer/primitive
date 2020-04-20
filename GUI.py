@@ -178,6 +178,17 @@ FILTERS = [
 "Negative"
 ]
 
+
+#file extension options
+EXTENSIONS = [
+".png",
+".jpg",
+".svg",
+".gif"
+]
+
+
+
 ############################## frame setup ###############################
 input_frame = tk.Frame(master)
 input_frame.pack(side=tk.TOP)
@@ -283,6 +294,13 @@ output_entry = tk.Entry(output_frame, width=40)
 browse2 = tk.Button(output_frame, text="Browse", command=output)
 #TODO: implement extension
 extensionLabel = tk.Label(output_frame, text="Extension:")
+selectedExtension = StringVar(master)
+selectedExtension.set(FILTERS[0])
+extensionOptions = OptionMenu(output_frame,selectedExtension, ".png", ".jpg", ".svg", ".gif")
+
+
+
+pathLabel = tk.Label(output_frame, text="Path:")
 
 begin_button = tk.Button(output_frame, text='Begin!',command=start, fg="red")
 begin_button['font'] = headerFont
@@ -295,7 +313,9 @@ filenameEntry.grid(row=1, column=1)
 #outputPathLabel.grid(row=2, column=7)
 output_entry.grid(row=2, column=1)
 browse2.grid(row=2, column=3, padx = 10)
-extensionLabel.grid(row=2, column=0)
+extensionLabel.grid(row=3, column=0)
+extensionOptions.grid(row=3, column=1)
+pathLabel.grid(row=2, column=0)
 begin_button.grid(row=4, columnspan=4, padx = 10, pady = 10)
 
 master.mainloop()
