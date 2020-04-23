@@ -138,7 +138,7 @@ def makePhoto():
         outputPath = outputPath + "/" + filenameEntry.get() + selectedExtension.get()
         print("This is outputPath " + outputPath)
         print("This is inputPath " + inputPath)
-        os.system("go run main.go -f %s -a %s -i %s -o %s -n %s -j %s -m %s" %(filter,alphaInput,inputPath,outputPath, numShapesInput, numWorkers, mode))
+        os.system("go run main.go -f %s -a %s -i %s -o %s -n %s -j %s -m %s" %(filter, alphaInput,inputPath,outputPath, numShapesInput, numWorkers, mode))
         
         return
             
@@ -147,8 +147,10 @@ def makePhoto():
     
 def start():
     if inputPath != '' and outputPath != '':
+        begin_button["state"] = "disable"
         makePhoto()
         displayImage()
+        begin_button["state"] = "normal"
     else:
         messagebox.showinfo("Error", "No Output/Input File!")
 		
@@ -296,7 +298,7 @@ selectedExtension = StringVar(master)
 selectedExtension.set(FILTERS[0])
 extensionOptions = OptionMenu(output_frame,selectedExtension, ".png", ".jpg", ".svg", ".gif")
 
-begin_button = tk.Button(output_frame, text='Begin!',command=start, fg="red")
+begin_button = tk.Button(output_frame, text='Begin!',command=start)
 begin_button['font'] = headerFont
 
 #insert into grid
