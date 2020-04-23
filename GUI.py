@@ -147,10 +147,8 @@ def makePhoto():
     
 def start():
     if inputPath != '' and outputPath != '':
-        begin_button["state"] = "disable"
         makePhoto()
         displayImage()
-        begin_button["state"] = "normal"
     else:
         messagebox.showinfo("Error", "No Output/Input File!")
 		
