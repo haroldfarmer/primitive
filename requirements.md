@@ -16,9 +16,35 @@ Req. 1.2 The User Interface shall allow the user to select the number of geometr
 
 Req. 1.3 The User Interface shall allow the user to select up to five different geometric shapes.
 
-Req. 1.4 The User Interface shall display the final image.
+Req. 1.4 The User Interface shall display the final image with all adjustments.
 
 Req. 1.5 The User Interface shall allow the user to select an image from their device to modify.
+
+Req. 1.6 The User Interface shall have an option for the user to adjust the output image's brightness
+
+Req. 1.7 The User Interface shall have an option for the user to adjust the contrast of the output image
+
+Req. 1.8 The User Interface shall have an option for a user to rotate the output image be a specified degree
+
+Req. 1.9 The User Interface shall have an option for a user to adjust the clarity/blur of the final image.
+
+Req. 2.0 The User Interface shall have an option to retreive an image from a URL.
+
+Req. 2.1 The User shall be able to specify the file extension in which they want their image to be saved.
+
+Req. 2.2 The User shall be able to specify the name of the output file and the location where it will be saved.
+
+Req. 2.3 The User Interface shall have an option for the user to adjust the saturation of the output image.
+
+Req. 2.4 The User Interface shall have 3 different filters to choose from
+
+Req. 2.4.1 The User Interface shall have a negative filter option
+
+Req. 2.4.2 The User Interface shall have a sepia filter option
+
+Req. 2.4.3 The User Interface shall have a gray scale option
+
+Req. 2.4.4 The User Interface shall default the filter option to no filter
 
 
 ### [User Story 2 ](features.md "Ref. Features And User Stories")
