@@ -1,5 +1,3 @@
-# Software Requirements Specification for Spring 2020 "Software Engineering" Primitives Project at Wright State University
-
 ## Overview
 
 This document specifies the project modifation to Fogleman's Primitive Application, hereafter called "App".
@@ -65,3 +63,4 @@ Req. 3.2 The App shall produce an output image in sepia.
 Req. 3.3 The App shall produce an output image in negative.
 
 Req. 3.4 The User shall be able to select a filter.
+

@@ -1,8 +1,11 @@
 package main
 
+import "C"
+
 import (
 	"flag"
 	"fmt"
+	"image/color"
 	"log"
 	"math/rand"
 	"os"
@@ -12,6 +15,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/disintegration/imaging"
 	"github.com/fogleman/primitive/primitive"
 	"github.com/nfnt/resize"
 )
@@ -28,6 +32,11 @@ var (
 	Workers    int
 	Nth        int
 	Repeat     int
+	Filter     int
+	Brightness float64
+	Blur       float64
+	Rotation   float64
+	SAT        float64
 	V, VV      bool
 )
 
@@ -47,6 +56,7 @@ type shapeConfig struct {
 	Mode   int
 	Alpha  int
 	Repeat int
+	Filter int
 }
 
 type shapeConfigArray []shapeConfig
@@ -57,7 +67,7 @@ func (i *shapeConfigArray) String() string {
 
 func (i *shapeConfigArray) Set(value string) error {
 	n, _ := strconv.ParseInt(value, 0, 0)
-	*i = append(*i, shapeConfig{int(n), Mode, Alpha, Repeat})
+	*i = append(*i, shapeConfig{int(n), Mode, Alpha, Repeat, Filter})
 	return nil
 }
 
@@ -73,6 +83,11 @@ func init() {
 	flag.IntVar(&Workers, "j", 0, "number of parallel workers (default uses all cores)")
 	flag.IntVar(&Nth, "nth", 1, "save every Nth frame (put \"%d\" in path)")
 	flag.IntVar(&Repeat, "rep", 0, "add N extra shapes per iteration with reduced search")
+	flag.IntVar(&Filter, "f", 0, "0=no filter 1=gray scale 2=sepia 3=negative")
+	flag.Float64Var(&Brightness, "b", 0, "percentage change of brightness [-100,100], 0 giving the original image")
+	flag.Float64Var(&Blur, "blur", 0, "produces a blurred version of the image, must be a positive value")
+	flag.Float64Var(&SAT, "sat", 0, "Color Intensity")
+	flag.Float64Var(&Rotation, "rot", 0, "degree of rotation for the output image")
 	flag.BoolVar(&V, "v", false, "verbose")
 	flag.BoolVar(&VV, "vv", false, "very verbose")
 }
@@ -105,6 +120,7 @@ func main() {
 		Configs[0].Mode = Mode
 		Configs[0].Alpha = Alpha
 		Configs[0].Repeat = Repeat
+		Configs[0].Filter = Filter
 	}
 	for _, config := range Configs {
 		if config.Count < 1 {
@@ -158,9 +174,8 @@ func main() {
 	start := time.Now()
 	frame := 0
 	for j, config := range Configs {
-		primitive.Log(1, "count=%d, mode=%d, alpha=%d, repeat=%d\n",
-			config.Count, config.Mode, config.Alpha, config.Repeat)
-
+		primitive.Log(1, "count=%d, mode=%d, alpha=%d, repeat=%d, filter=%d\n",
+			config.Count, config.Mode, config.Alpha, config.Repeat, config.Filter)
 		for i := 0; i < config.Count; i++ {
 			frame++
 
@@ -187,13 +202,18 @@ func main() {
 						path = fmt.Sprintf(output, frame)
 					}
 					primitive.Log(1, "writing %s\n", path)
+
+					adjustedImage := imaging.AdjustBrightness(model.Context.Image(), Brightness)
+					adjustedImage = imaging.Blur(adjustedImage, Blur)
+					adjustedImage = imaging.Rotate(adjustedImage, Rotation, color.Black)
+					adjustedImage = imaging.AdjustSaturation(adjustedImage, SAT)
 					switch ext {
 					default:
 						check(fmt.Errorf("unrecognized file extension: %s", ext))
 					case ".png":
-						check(primitive.SavePNG(path, model.Context.Image()))
+						check(primitive.SavePNG(path, adjustedImage))
 					case ".jpg", ".jpeg":
-						check(primitive.SaveJPG(path, model.Context.Image(), 95))
+						check(primitive.SaveJPG(path, adjustedImage, 95))
 					case ".svg":
 						check(primitive.SaveFile(path, model.SVG()))
 					case ".gif":

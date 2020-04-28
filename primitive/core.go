@@ -5,7 +5,7 @@ import (
 	"math"
 )
 
-func computeColor(target, current *image.RGBA, lines []Scanline, alpha int) Color {
+func computeColor(target, current *image.RGBA, lines []Scanline, alpha int, filter int) Color {
 	var rsum, gsum, bsum, count int64
 	a := 0x101 * 255 / alpha
 	for _, line := range lines {
@@ -30,7 +30,8 @@ func computeColor(target, current *image.RGBA, lines []Scanline, alpha int) Colo
 	r := clampInt(int(rsum/count)>>8, 0, 255)
 	g := clampInt(int(gsum/count)>>8, 0, 255)
 	b := clampInt(int(bsum/count)>>8, 0, 255)
-	return Color{r, g, b, alpha}
+
+	return applyFilter(filter, r, g, b, alpha)
 }
 
 func copyLines(dst, src *image.RGBA, lines []Scanline) {
@@ -39,6 +40,58 @@ func copyLines(dst, src *image.RGBA, lines []Scanline) {
 		b := a + (line.X2-line.X1+1)*4
 		copy(dst.Pix[a:b], src.Pix[a:b])
 	}
+}
+
+func applyFilter(filter, r, g, b, alpha int) Color {
+	if filter == 0 {
+		return Color{r, g, b, alpha}
+	}
+
+	if filter == 1 {
+		return GrayScaleFilter(r, g, b, alpha)
+	}
+
+	if filter == 2 {
+		return SepiaFilter(r, g, b, alpha)
+	}
+
+	if filter == 3 {
+		return NegativeFilter(r, g, b, alpha)
+	}
+
+	return Color{r, g, b, alpha}
+}
+
+func GrayScaleFilter(r, g, b, alpha int) Color {
+	newRed := int(0.21 * float64(r))
+	newGreen := int(0.72 * float64(g))
+	newBlue := int(0.07 * float64(b))
+	return Color{newRed, newGreen, newBlue, alpha}
+}
+
+func SepiaFilter(r, g, b, alpha int) Color {
+	var tr = int(0.339*float64(r) + 0.768*float64(g) + 0.189*float64(b))
+	var tg = int(0.349*float64(r) + 0.686*float64(g) + 0.168*float64(b))
+	var tb = int(0.272*float64(r) + 0.534*float64(g) + 0.131*float64(b))
+
+	if tr > 255 {
+		tr = 255
+	}
+	if tg > 255 {
+		tg = 255
+	}
+	if tb > 255 {
+		tb = 255
+	}
+
+	return Color{tr, tg, tb, alpha}
+}
+
+func NegativeFilter(r, g, b, alpha int) Color {
+	r = 255 - r
+	g = 255 - g
+	b = 255 - b
+	return Color{r, g, b, alpha}
 }
 
 func drawLines(im *image.RGBA, c Color, lines []Scanline) {
