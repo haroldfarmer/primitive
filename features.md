@@ -3,6 +3,7 @@
 1) Privide a GUI for configuring and running program
 
     A) As an App user, I want to use the program through a GUI. This GUI should have options like; select file and how many polygons used.
+    
     B) As an App user, I want a help function where I can see the instructions on how to use the application
     C) As an App user, I want to have the full functionality of the commandline through the GUI
     D) As an App user, I want to have default so I can select my image and press go without having to fill in the values myself.
