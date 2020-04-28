@@ -94,8 +94,8 @@ Req. 4.5 The User shall have an option to adjust the brightness of the produced 
 
 Req. 4.6 The User shall have an option to adjust the saturation of the produced image
 
-Req. 4.6 The User shall have an option to rotate the produced image
+Req. 4.7 The User shall have an option to rotate the produced image
 
-Req. 4.7 The User shall have an option to adjust the contrast of the produced image
+Req. 4.8 The User shall have an option to adjust the contrast of the produced image
 
-Req. 4.8 The User shall have an option to adjust the blur of the produces image
+Req. 4.9 The User shall have an option to adjust the blur of the produces image
