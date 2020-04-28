@@ -4,10 +4,7 @@ import "C"
 
 import (
 	"testing"
-	"image"
-	"math"
 )
-
 
 func TestApplyFilter(t *testing.T) {
 	filter := 0
@@ -47,14 +44,14 @@ func TestApplyFilter(t *testing.T) {
 
 func TestSepiaFilter(t *testing.T) {
 	color := SepiaFilter(12, 255, 61, 1)
-	if color.R!=211 || color.G!=189 || color.B!=147 {
+	if color.R != 211 || color.G != 189 || color.B != 147 {
 		t.Errorf("The computed color was incorrect, got: r=%d g=%d b=%d, want: r=%d g=%d b=%d", color.R, color.G, color.B, 211, 189, 147)
 	}
 }
 
 func TestNegativeFilter(t *testing.T) {
 	color := NagativeFilter(12, 255, 61, 1)
-	if color.R!=243 || color.G!=0 || color.B!=194 {
+	if color.R != 243 || color.G != 0 || color.B != 194 {
 		t.Errorf("The computed color was incorrect, got: r=%d g=%d b=%d, want: r=%d g=%d b=%d", color.R, color.G, color.B, 211, 189, 147)
 	}
 }

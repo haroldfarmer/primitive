@@ -1,4 +1,6 @@
 import unittest
+
+from GUI import displayImage
 from utils import *
 from unittest.mock import Mock
 from unittest.mock import patch
@@ -11,6 +13,7 @@ class TestUtils(unittest.TestCase):
         self.assertTrue(checkOutPath('/this/is/path.gif'))
 
 
-
+        
 if __name__== '__main__':
     unittest.main()
+    
